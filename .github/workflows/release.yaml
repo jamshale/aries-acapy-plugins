@@ -55,7 +55,7 @@ jobs:
           git fetch --all
           git checkout -b release_2
           git add . 
-          git push --set-upstream origin main
+          git push --set-upstream origin release_2
 
     # git commit -m "Automated Pull Request"
     # git push --set-upstream origin main
