@@ -54,6 +54,6 @@ jobs:
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@https://github.com/jamshale/aries-acapy-plugins
           git add . 
           git commit -m "Automated Pull Request"
-          git push https://github.com/jamshale/aries-acapy-plugins release_2
+          git push --set-upstream origin main
           
           git request-pull v1.0 https://github.com/jamshale/aries-acapy-plugins 
