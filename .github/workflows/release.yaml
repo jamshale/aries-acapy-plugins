@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - "**"
+
+permissions:
+  contents: write
+
+jobs:
+
+  checks:
+    name: "Check global version"
+    runs-on: ubuntu-latest
+    outputs:
+      current_available_version: ${{ steps.current_available_version.outputs.version }}
+      current_global_version: ${{ steps.current_global_version.outputs.version }}
+    defaults:
+      run:
+        working-directory: ./plugin_globals
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install poetry
+        run: pipx install poetry
+        id: setup-poetry
+      
+      - name: Get latest aries-cloudagent version
+        id: current_available_version
+        run: |
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
+          echo "Remote version = $version"
+
+      - name: Get global aries-cloudagent version from plugins repo
+        id: current_global_version
+        run: |
+          lock_version=$(grep -A1 'name = "aries-cloudagent"' poetry.lock | grep -v 'name = "aries-cloudagent"')
+          version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
+          echo "Global version = $version"
+      - name: Update global acapy version
+        run: |
+          cd .. && python repo_manager.py 3
+          echo "Update global acapy version"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Upgrade on aca-py release
+          committer: Jamie Hale <jamiehalebc@users.noreply.github.com>
+          branch: test-upgrade
+          base: main
