@@ -48,9 +48,11 @@ jobs:
           cd .. && python repo_manager.py 3
           echo "Update global acapy version"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: Upgrade on aca-py release
-          committer: Jamie Hale <jamiehale@users.noreply.github.com>
-          branch: test-upgrade
-          base: main
+        run: |
+          git config --global user.name 'Jamie Hale'
+          git config --global user.email 'jamshale@users.noreply.github.com'
+          git checkout -b release-v12
+          git add . 
+          git commit -am "Automated Pull Request"
+          git push --set-upstream origin main
+          git request-pull v1.0 https://github.com/jamshale/aries-acapy-plugins main
