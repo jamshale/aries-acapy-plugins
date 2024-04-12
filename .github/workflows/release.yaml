@@ -51,6 +51,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: Upgrade on aca-py release
-          committer: Jamie Hale <jamiehalebc@users.noreply.github.com>
+          committer: Jamie Hale <jamiehale@users.noreply.github.com>
           branch: test-upgrade
-          base: origin/main
+          base: main
