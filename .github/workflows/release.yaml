@@ -53,4 +53,4 @@ jobs:
           commit-message: Upgrade on aca-py release
           committer: Jamie Hale <jamiehalebc@users.noreply.github.com>
           branch: test-upgrade
-          base: main
+          base: origin/main
