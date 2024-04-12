@@ -54,5 +54,5 @@ jobs:
           git checkout -b release-v12
           git add . 
           git commit -m "Automated Pull Request"
-          git push
+          git push --set-upstream origin release-v12
 
