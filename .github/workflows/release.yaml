@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - "**"
+
+permissions:
+  contents: write
+
+jobs:
+
+  checks:
+    name: "Check global version"
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      current_available_version: ${{ steps.current_available_version.outputs.version }}
+      current_global_version: ${{ steps.current_global_version.outputs.version }}
+      upgrade_available: ${{ steps.current_global_version.outputs.available }}
+      failed_lint: ${{ steps.lint_plugins.outputs.lint_plugins }}
+    defaults:
+      run:
+        working-directory: ./plugin_globals
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install poetry
+        run: pipx install poetry
+        id: setup-poetry
+      
+      - name: Get latest aries-cloudagent version
+        id: current_available_version
+        run: |
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
+          echo current_available_version=$version >> $GITHUB_OUTPUT
+          echo "Remote version = $version"
+      - name: Get global aries-cloudagent version from plugins repo
+        id: current_global_version
+        run: |
+          lock_version=$(grep -A1 'name = "aries-cloudagent"' poetry.lock | grep -v 'name = "aries-cloudagent"')
+          version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
+          echo current_global_version=$version >> $GITHUB_OUTPUT
+          echo "Global version = $version"
+      - name: Check if aries-cloudagent upgrade available
+        run: |
+          current_available_version="${{steps.current_available_version.outputs.current_available_version}}"
+          echo "Remote version = $current_available_version"
+          current_global_version="${{steps.current_global_version.outputs.current_global_version}}"
+          echo "Global version = $current_global_version"
+          sem_version () { 
+            echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
+          }
+          if [ $(sem_version $current_global_version) -ge $(sem_version $current_available_version) ]; then
+            echo "Version of aries-cloudagent is up to date"
+            available=false
+            exit 1
+          fi
+            echo "Detected aries-cloudagent upgrade available..."
+            available=true
+
+      - name: Update global acapy version
+        run: |
+          cd .. && python repo_manager.py 2
+          echo "Update global acapy version"
+      - name: Run global updates
+        run: |
+          cd .. && python repo_manager.py 3
+          echo "Upgrade all plugins"
+      - name: Lint plugins
+        id: lint_plugins
+        continue-on-error: true
+        run: |
+          cd ..
+          declare -a lint_plugins=()
+          for dir in ../*/; do
+            cd $dir
+            if poetry run ruff check .; then
+              echo "plugin $dir passed lint check"
+            else
+              echo "plugin $dir failed lint check"
+              failed_plugins+=("$dir")
+            fi
+            cd ..
+          done
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+        run: |
+          echo "${{steps.lint_plugins.outputs.failed_lint}}"
+          git config --global user.name 'Jamie Hale'
+          git config --global user.email 'jamshale@users.noreply.github.com'
+          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
+          git fetch --all
+          git checkout -b release-v0.12.0
+          git add ../.
+          git commit -s -m "Pre-Release Upgrades"
+          git push --set-upstream origin release-v0.12.0
+          gh pr create --title "Release" --body "To fill in" --base main --head release-v0.12.0 
