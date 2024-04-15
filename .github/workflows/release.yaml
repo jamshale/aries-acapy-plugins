@@ -21,6 +21,7 @@ jobs:
       upgrade_available: ${{ steps.current_global_version.outputs.available }}
       lint_plugins: ${{ steps.lint_plugins.outputs.lint_plugins }}
       unit_test_plugins: ${{ steps.unit_test_plugins.outputs.unit_test_plugins }}
+      integration_test_plugins: ${{ steps.integration_test_plugins.outputs.integration_test_plugins }}
     defaults:
       run:
         working-directory: .
@@ -106,14 +107,40 @@ jobs:
             fi
             cd $current_folder
             if poetry run pytest; then
-              echo "plugin $current_folder passed lint check"
+              echo "plugin $current_folder passed unit test check"
             else
-              echo "plugin $current_folder failed lint check"
+              echo "plugin $current_folder failed unit test check"
               failed_plugins+=("$current_folder")
             fi
             cd ..
           done
           echo unit_test_plugins=$failed_plugins >> $GITHUB_OUTPUT
+      - name: Initialize Docker Compose
+        uses: isbang/compose-action@v1.5.1
+      - name: Integration Test Plugins
+        id: integration_test_plugins
+        continue-on-error: true
+        run: |
+          declare -a failed_plugins=()
+          for dir in ./*/; do
+            current_folder=$(basename "$dir")
+            cd ../..
+            if [[ $current_folder == "plugin_globals" ]]; then
+              continue
+            fi
+            cd $current_folder/integration
+            docker compose down --remove-orphans
+            docker compose build
+            if poetry run pytest; then
+              docker compose run tests
+              echo "plugin $current_folder passed integration test check"
+            else
+              echo "plugin $current_folder failed integration test check"
+              failed_plugins+=("$current_folder")
+            fi
+            cd ..
+          done
+          echo integration_test_plugins=$failed_plugins >> $GITHUB_OUTPUT
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
