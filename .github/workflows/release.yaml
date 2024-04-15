@@ -84,6 +84,7 @@ jobs:
             else
               echo "plugin $dir failed lint check"
               failed_plugins+=("$dir")
+            fi
             cd ..
           done
       - name: Create Pull Request
