@@ -19,6 +19,7 @@ jobs:
       current_available_version: ${{ steps.current_available_version.outputs.version }}
       current_global_version: ${{ steps.current_global_version.outputs.version }}
       upgrade_available: ${{ steps.current_global_version.outputs.available }}
+      failed_lint: ${{ steps.lint_plugins.outputs.lint_plugins }}
     defaults:
       run:
         working-directory: ./plugin_globals
@@ -71,10 +72,25 @@ jobs:
         run: |
           cd .. && python repo_manager.py 3
           echo "Upgrade all plugins"
+      - name: Lint plugins
+        id: lint_plugins
+        continue-on-error: true
+        run: |
+          declare -a lint_plugins=()
+          for dir in ../*/; do
+            cd $dir
+            if poetry run ruff check .; then
+              echo "plugin $dir passed lint check"
+            else
+              echo "plugin $dir failed lint check"
+              failed_plugins+=("$dir")
+            cd ..
+          done
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
         run: |
+          echo "${{steps.lint_plugins.outputs.failed_lint}}"
           git config --global user.name 'Jamie Hale'
           git config --global user.email 'jamshale@users.noreply.github.com'
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
