@@ -48,12 +48,13 @@ jobs:
       - name: Check if aries-cloudagent upgrade available
         run: |
           function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
-          echo ${{ steps.current_available_version.outputs.version}}
-          echo ${{ steps.current_global_version.outputs.version }}
-          if [ $(version ${{ steps.current_available_version.outputs.version}}) -ge $(version ${{ steps.current_global_version.outputs.version }})]; then
-            echo "Version of aries-cloudagent is up to date"
-            exit 1
-          fi
+
+  # echo ${{ steps.current_available_version.outputs.version}}
+  # echo ${{ steps.current_global_version.outputs.version }}
+  # if [ $(version ${{ steps.current_available_version.outputs.version}}) -ge $(version ${{ steps.current_global_version.outputs.version }})]; then
+  #   echo "Version of aries-cloudagent is up to date"
+  #   exit 1
+  # fi
       - name: Update global acapy version
         run: |
           cd .. && python repo_manager.py 3
