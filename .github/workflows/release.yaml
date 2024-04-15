@@ -55,7 +55,10 @@ jobs:
           current_global_version="${{steps.current_global_version.outputs.current_global_version}}"
           echo "Global version = $current_global_version"
           hello_world
-        # function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+          version () { 
+            echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
+          }
+          version $current_available_version
         # if [ $(version $current_available_version) -ge $(version $current_global_version) ]; then
         #   echo "Version of aries-cloudagent is up to date"
         #   exit 1
