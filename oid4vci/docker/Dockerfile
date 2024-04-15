@@ -16,7 +16,7 @@ RUN poetry config virtualenvs.in-project true
 RUN mkdir oid4vci && touch oid4vci/__init__.py
 COPY pyproject.toml poetry.lock README.md ./
 ARG install_flags='--with integration --extras aca-py'
-RUN poetry install ${install_flags}}
+RUN poetry install ${install_flags}
 USER $user
 
 FROM python:3.9-bullseye
