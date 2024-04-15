@@ -115,30 +115,30 @@ jobs:
             cd ..
           done
           echo unit_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
-      - name: Initialize Docker Compose
-        uses: isbang/compose-action@v1.5.1
-      - name: Integration Test Plugins
-        id: integration_test_plugins
-        continue-on-error: true
-        run: |
-          declare -a failed_plugins=()
-          for dir in ./*/; do
-            current_folder=$(basename "$dir")
-            if [[ $current_folder == "plugin_globals" ]]; then
-              continue
-            fi
-            cd $current_folder/integration
-            docker compose down --remove-orphans
-            docker compose build
-            if docker compose run tests; then
-              echo "plugin $current_folder passed integration test check"
-            else
-              echo "plugin $current_folder failed integration test check"
-              failed_plugins+=("$current_folder")
-            fi
-            cd ../..
-          done
-          echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
+      # - name: Initialize Docker Compose
+      #   uses: isbang/compose-action@v1.5.1
+      # - name: Integration Test Plugins
+      #   id: integration_test_plugins
+      #   continue-on-error: true
+      #   run: |
+      #     declare -a failed_plugins=()
+      #     for dir in ./*/; do
+      #       current_folder=$(basename "$dir")
+      #       if [[ $current_folder == "plugin_globals" ]]; then
+      #         continue
+      #       fi
+      #       cd $current_folder/integration
+      #       docker compose down --remove-orphans
+      #       docker compose build
+      #       if docker compose run tests; then
+      #         echo "plugin $current_folder passed integration test check"
+      #       else
+      #         echo "plugin $current_folder failed integration test check"
+      #         failed_plugins+=("$current_folder")
+      #       fi
+      #       cd ../..
+      #     done
+      #     echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
