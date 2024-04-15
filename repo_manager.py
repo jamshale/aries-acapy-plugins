@@ -319,9 +319,9 @@ def main(arg_1 = None):
                 print(f'Updating common poetry sections in {plugin_name}\n')
                 replace_global_sections(plugin_name)
                 os.system(
-                    f'cd {plugin_name} && rm poetry.lock && poetry install --all-extras')
+                    f'cd {plugin_name} && rm poetry.lock && poetry lock')
                 os.system(
-                    f'cd {plugin_name}/integration && rm poetry.lock && poetry install --all-extras --no-root')
+                    f'cd {plugin_name}/integration && rm poetry.lock && poetry lock')
                 
     # Install plugin globals
     elif selection == "3":
