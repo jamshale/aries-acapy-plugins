@@ -77,7 +77,7 @@ jobs:
         id: lint_plugins
         continue-on-error: true
         run: |
-          declare -a lint_plugins=()
+          declare -a failed_plugins=()
           for dir in ./*/; do
             current_folder=$(basename "$dir")
             if [[ $current_folder == "plugin_globals" ]]; then
@@ -92,7 +92,7 @@ jobs:
             fi
             cd ..
           done
-          echo lint_plugins=$lint_plugins >> $GITHUB_OUTPUT
+          echo lint_plugins=$failed_plugins >> $GITHUB_OUTPUT
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
