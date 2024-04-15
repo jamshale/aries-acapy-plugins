@@ -94,7 +94,7 @@ jobs:
             fi
             cd ..
           done
-          echo lint_plugins=$failed_plugins >> $GITHUB_OUTPUT
+          echo lint_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
       - name: Unit Test Plugins
         id: unit_test_plugins
         continue-on-error: true
@@ -114,7 +114,7 @@ jobs:
             fi
             cd ..
           done
-          echo unit_test_plugins=$failed_plugins >> $GITHUB_OUTPUT
+          echo unit_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
       - name: Initialize Docker Compose
         uses: isbang/compose-action@v1.5.1
       - name: Integration Test Plugins
@@ -139,7 +139,7 @@ jobs:
             fi
             cd ../..
           done
-          echo integration_test_plugins=$failed_plugins >> $GITHUB_OUTPUT
+          echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
