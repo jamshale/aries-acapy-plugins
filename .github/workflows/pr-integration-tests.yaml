@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - "**"
+      - "!release*"
   push:
     branches:
       - main
@@ -57,7 +57,7 @@ jobs:
           echo "changed-plugins=${changed_dirs[*]}" >> $GITHUB_OUTPUT
 
       #----------------------------------------------
-      #       Get changed plugins
+      #       Run Integation Tests
       #----------------------------------------------
       - name: Run Integration Tests
         id: integration-tests
