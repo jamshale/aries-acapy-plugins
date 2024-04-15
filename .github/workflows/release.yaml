@@ -56,7 +56,7 @@ jobs:
             echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
           }
           version $current_available_version
-          if [ $(version $current_available_version) -ge $(version $current_global_version) ]; then
+          if [ $(version $current_global_version) -ge $(version $current_available_version) ]; then
             echo "Version of aries-cloudagent is up to date"
             available=false
             exit 1
