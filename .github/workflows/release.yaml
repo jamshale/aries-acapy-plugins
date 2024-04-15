@@ -81,5 +81,6 @@ jobs:
           git fetch --all
           git checkout -b release-v0.12.0
           git add . 
+          git commit -s -m "Pre-Release Upgrades"
           git push --set-upstream origin release-v0.12.0
           gh pr create --title "Release" --body "To fill in" --base main --head release-v0.12.0 
