@@ -308,7 +308,7 @@ def main(arg_1 = None):
         os.makedirs(f'./{name}/{name}/v1_0')
         copy_all_common_files_for_new_plugin(plugin_info)
 
-        os.system(f'cd {name} && poetry install --no-interaction --no-root --extras "aca-py"')
+        os.system(f'cd {name} && poetry install --no-root')
 
     # Update common poetry sections
     elif selection == "2":
@@ -319,9 +319,9 @@ def main(arg_1 = None):
                 print(f'Updating common poetry sections in {plugin_name}\n')
                 replace_global_sections(plugin_name)
                 os.system(
-                    f'cd {plugin_name} && rm poetry.lock && poetry install --no-interaction --no-root --extras "aca-py"')
+                    f'cd {plugin_name} && rm poetry.lock && poetry install --no-root')
                 os.system(
-                    f'cd {plugin_name}/integration && rm poetry.lock && poetry install --no-interaction --no-root --extras "aca-py"')
+                    f'cd {plugin_name}/integration && rm poetry.lock && poetry install --no-root')
                 
     # Install plugin globals
     elif selection == "3":

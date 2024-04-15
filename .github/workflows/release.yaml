@@ -131,14 +131,13 @@ jobs:
             cd $current_folder/integration
             docker compose down --remove-orphans
             docker compose build
-            if poetry run pytest; then
-              docker compose run tests
+            if docker compose run tests; then
               echo "plugin $current_folder passed integration test check"
             else
               echo "plugin $current_folder failed integration test check"
               failed_plugins+=("$current_folder")
             fi
-            cd ..
+            cd ../..
           done
           echo integration_test_plugins=$failed_plugins >> $GITHUB_OUTPUT
       - name: Create Pull Request
@@ -147,6 +146,7 @@ jobs:
         run: |
           echo "${{steps.lint_plugins.outputs.lint_plugins}}"
           echo "${{steps.unit_test_plugins.outputs.unit_test_plugins}}"
+          echo "${{steps.integration_test_plugins.outputs.integration_test_plugins}}"
           git config --global user.name 'Jamie Hale'
           git config --global user.email 'jamshale@users.noreply.github.com'
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
