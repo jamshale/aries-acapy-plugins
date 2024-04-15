@@ -13,6 +13,7 @@ jobs:
 
   checks:
     name: "Check global version"
+    permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       current_available_version: ${{ steps.current_available_version.outputs.version }}
