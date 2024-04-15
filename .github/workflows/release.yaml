@@ -22,7 +22,7 @@ jobs:
       failed_lint: ${{ steps.lint_plugins.outputs.lint_plugins }}
     defaults:
       run:
-        working-directory: ./plugin_globals
+        working-directory: .
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -43,6 +43,7 @@ jobs:
       - name: Get global aries-cloudagent version from plugins repo
         id: current_global_version
         run: |
+          cd plugin_globals
           lock_version=$(grep -A1 'name = "aries-cloudagent"' poetry.lock | grep -v 'name = "aries-cloudagent"')
           version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
           echo current_global_version=$version >> $GITHUB_OUTPUT
@@ -76,15 +77,15 @@ jobs:
         id: lint_plugins
         continue-on-error: true
         run: |
-          cd ..
           declare -a lint_plugins=()
-          for dir in ../*/; do
-            cd $dir
+          for dir in ./*/; do
+            current_folder=$(basename "$dir")
+            cd $current_folder
             if poetry run ruff check .; then
-              echo "plugin $dir passed lint check"
+              echo "plugin $current_folder passed lint check"
             else
-              echo "plugin $dir failed lint check"
-              failed_plugins+=("$dir")
+              echo "plugin $current_folder failed lint check"
+              failed_plugins+=("$current_folder")
             fi
             cd ..
           done
