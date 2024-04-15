@@ -18,6 +18,7 @@ jobs:
     outputs:
       current_available_version: ${{ steps.current_available_version.outputs.version }}
       current_global_version: ${{ steps.current_global_version.outputs.version }}
+      upgrade_available: ${{ steps.current_global_version.outputs.available }}
     defaults:
       run:
         working-directory: ./plugin_globals
@@ -48,25 +49,28 @@ jobs:
       - name: Check if aries-cloudagent upgrade available
         run: |
           current_available_version="${{steps.current_available_version.outputs.current_available_version}}"
-          hello_world () {
-            echo 'hello, world'
-          }
           echo "Remote version = $current_available_version"
           current_global_version="${{steps.current_global_version.outputs.current_global_version}}"
           echo "Global version = $current_global_version"
-          hello_world
           version () { 
             echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
           }
           version $current_available_version
           if [ $(version $current_available_version) -ge $(version $current_global_version) ]; then
             echo "Version of aries-cloudagent is up to date"
+            available=false
             exit 1
           fi
+            available=true
+
       - name: Update global acapy version
         run: |
           cd .. && python repo_manager.py 3
           echo "Update global acapy version"
+      - name: Run global updates
+        run: |
+          cd .. && python repo_manager.py 1
+          echo "Upgrade all plugins"
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
@@ -78,4 +82,4 @@ jobs:
           git checkout -b release-v0.12.0
           git add . 
           git push --set-upstream origin release-v0.12.0
-          gh pr create --reviewer jamshale --title "Release" --body "To fill in" --base main --head jamshale:release-v0.12.0 
+          gh pr create --title "Release" --body "To fill in" --base main --head release-v0.12.0 
