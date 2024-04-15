@@ -53,10 +53,10 @@ jobs:
           git config --global user.email 'jamshale@users.noreply.github.com'
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
           git fetch --all
-          git checkout -b release_0.12.0
+          git checkout -b release0.12.0
           git add . 
-          git push --set-upstream origin release_0.12.0
-          git request-pull main release_0.12.0
+          git push --set-upstream origin release0.12.0
+          gh pr create --reviewer jamshale --title "Release" --base main --head jamshale:release_]0.12.0 
 
     # git commit -m "Automated Pull Request"
     # git push --set-upstream origin main
