@@ -271,7 +271,7 @@ def is_plugin_directory(plugin_name: str) -> bool:
     return os.path.isdir(plugin_name) and plugin_name != GLOBAL_PLUGIN_DIR and not plugin_name.startswith('.')
 
 
-def main(arg_1):
+def main(arg_1 = None):
     print("Checking poetry is available...")
     response = os.system('which poetry')
     if response == "":
@@ -332,4 +332,7 @@ def main(arg_1):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    try:
+        main(sys.argv[1])
+    except Exception:
+        main()

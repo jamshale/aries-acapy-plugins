@@ -60,6 +60,7 @@ jobs:
             available=false
             exit 1
           fi
+            echo "Detected aries-cloudagent upgrade available..."
             available=true
 
       - name: Update global acapy version
@@ -68,7 +69,7 @@ jobs:
           echo "Update global acapy version"
       - name: Run global updates
         run: |
-          cd .. && python repo_manager.py 1
+          cd .. && python repo_manager.py 3
           echo "Upgrade all plugins"
       - name: Create Pull Request
         env:
