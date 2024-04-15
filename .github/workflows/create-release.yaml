@@ -1,0 +1,95 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+
+permissions:
+  contents: write
+
+jobs:
+
+  checks:
+    
+    name: "Create Release"
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      current_available_version: ${{ steps.current_available_version.outputs.version }}
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get latest aries-cloudagent version
+        id: current_available_version
+        run: |
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
+          echo current_available_version=$version >> $GITHUB_OUTPUT
+          echo "Remote version = $version"
+      - name: Check If Release Should Be Created
+        run: |
+          found_upgrade=false
+          for dir in ./*/; do
+            current_folder=$(basename "$dir")
+            cd $current_folder
+            lock_version=$(grep -A1 'name = "aries-cloudagent"' poetry.lock | grep -v 'name = "aries-cloudagent"')
+            version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
+            echo "Current version in $current_folder = $version"
+            if [ "$version" == "${{ steps.current_available_version.outputs.current_available_version }}" ]
+            then
+              found_upgrade=true
+            fi
+            cd ..
+          done
+
+          if [ "$found_upgrade" = true ]
+          then
+            echo "Upgrade Detected. Creating Release"
+          else
+            echo "No Upgrade Detected. Skipping Release Creation."
+            exit 0
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+        run: |
+          echo "Creating release"
+
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
+
+          git config --global user.name 'Release Bot'
+          git config --global user.email 'release-bot@users.noreply.github.com'
+          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
+          git fetch --tags
+
+          get_tags_output=$(git tag -n0 "*$version*")
+          echo "Tag output:" 
+          echo "${get_tags_output}"
+
+          tags_num=0
+          for item in ${get_tags_output}; do
+            tags_num=$((tags_num+1))
+          done
+
+          echo "Number of matched tags: $tags_num"
+          
+          release_tag=""
+          if [ $tags_num -eq 0 ]
+          then
+            release_tag=$version
+          else
+            release_tag="$version.$tags_num"
+          fi
+
+          git tag -a $release_tag -m "Release $tag"
+          git push origin $release_tag
+          gh release create $release_tag --title "Release for aries-cloudagent v$version" --notes "Release $release_tag"
+
