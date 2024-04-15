@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 from copy import deepcopy
 from enum import Enum
 from typing import Optional
@@ -270,7 +271,7 @@ def is_plugin_directory(plugin_name: str) -> bool:
     return os.path.isdir(plugin_name) and plugin_name != GLOBAL_PLUGIN_DIR and not plugin_name.startswith('.')
 
 
-def main():
+def main(arg_1 = None):
     print("Checking poetry is available...")
     response = os.system('which poetry')
     if response == "":
@@ -281,8 +282,13 @@ def main():
         What would you like to do? 
         (1) Create a new plugin
         (2) Update all plugin common poetry sections 
-        (3) Exit \n\nInput:  """
-    selection = input(options)
+        (3) Upgrade plugin_global dependencies 
+        (4) Exit \n\nInput:  """
+    
+    if arg_1:
+        selection = arg_1
+    else:
+        selection = input(options)
 
     # Create a new plugin
     if selection == "1":
@@ -313,10 +319,20 @@ def main():
                 print(f'Updating common poetry sections in {plugin_name}\n')
                 replace_global_sections(plugin_name)
                 os.system(
-                    f'cd {plugin_name} && rm poetry.lock && poetry install')
+                    f'cd {plugin_name} && rm poetry.lock && poetry install --no-root')
                 os.system(
                     f'cd {plugin_name}/integration && rm poetry.lock && poetry install')
+                
+    # Install plugin globals
+    elif selection == "3":
+        msg = """Upgrade plugin_global dependencies \n"""
+        print(msg)
+        os.system('cd plugin_globals && poetry lock')
+
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main(sys.argv[1])
+    except Exception:
+        main()
