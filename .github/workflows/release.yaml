@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - "**"
+
+permissions:
+  contents: write
+
+jobs:
+
+  checks:
+    name: "Check global version"
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      current_available_version: ${{ steps.current_available_version.outputs.version }}
+      current_global_version: ${{ steps.current_global_version.outputs.version }}
+    defaults:
+      run:
+        working-directory: ./plugin_globals
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install poetry
+        run: pipx install poetry
+        id: setup-poetry
+      
+      - name: Get latest aries-cloudagent version
+        id: current_available_version
+        run: |
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
+          echo current_available_version=$version >> $GITHUB_OUTPUT
+          echo "Remote version = $version"
+      - name: Get global aries-cloudagent version from plugins repo
+        id: current_global_version
+        run: |
+          lock_version=$(grep -A1 'name = "aries-cloudagent"' poetry.lock | grep -v 'name = "aries-cloudagent"')
+          version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
+          echo current_global_version=$version >> $GITHUB_OUTPUT
+          echo "Global version = $version"
+      - name: Check if aries-cloudagent upgrade available
+        run: |
+          function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+          echo "${{ steps.current_available_version.outputs.current_global_version}}"
+  # echo ${{ steps.current_global_version.outputs.version }}
+  # if [ $(version ${{ steps.current_available_version.outputs.version}}) -ge $(version ${{ steps.current_global_version.outputs.version }})]; then
+  #   echo "Version of aries-cloudagent is up to date"
+  #   exit 1
+  # fi
+      - name: Update global acapy version
+        run: |
+          cd .. && python repo_manager.py 3
+          echo "Update global acapy version"
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+        run: |
+          git config --global user.name 'Jamie Hale'
+          git config --global user.email 'jamshale@users.noreply.github.com'
+          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
+          git fetch --all
+          git checkout -b release-v0.12.0
+          git add . 
+          git push --set-upstream origin release-v0.12.0
+          gh pr create --reviewer jamshale --title "Release" --body "To fill in" --base main --head jamshale:release-v0.12.0 
