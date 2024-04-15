@@ -48,6 +48,8 @@ jobs:
           cd .. && python repo_manager.py 3
           echo "Update global acapy version"
       - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
         run: |
           git config --global user.name 'Jamie Hale'
           git config --global user.email 'jamshale@users.noreply.github.com'
