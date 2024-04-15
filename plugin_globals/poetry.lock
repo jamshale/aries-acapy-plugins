@@ -153,6 +153,19 @@ files = [
 frozenlist = ">=1.1.0"
 
 [[package]]
+name = "anoncreds"
+version = "0.2.0.dev11"
+description = ""
+optional = true
+python-versions = ">=3.6.3"
+files = [
+    {file = "anoncreds-0.2.0.dev11-py3-none-macosx_10_9_universal2.whl", hash = "sha256:23ef321b0244967db7cfa687c7e2f5dec498835793f98be878037872bf88efde"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-manylinux2014_aarch64.whl", hash = "sha256:f442c560578bdfb577aaaf51caf30df373df2eb61df47568806f9b78dc08ca7d"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-manylinux2014_x86_64.whl", hash = "sha256:5a515904ce8bf6ed39f9c20caf7955e986414d6e6153037c3e1223590111f0ca"},
+    {file = "anoncreds-0.2.0.dev11-py3-none-win_amd64.whl", hash = "sha256:70002c9393edc5045ada6c7ba44fd868e99e46bd3b6a7e26c15171616a923688"},
+]
+
+[[package]]
 name = "apispec"
 version = "3.3.2"
 description = "A pluggable API specification generator. Currently supports the OpenAPI Specification (f.k.a. the Swagger specification)."
@@ -2573,4 +2586,4 @@ aca-py = ["aries-cloudagent"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "fa317b387b71d37baacb38a5dd4b8f361f1adfcc0d76e4b59f22edbcd6439fd1"
+content-hash = "89d19ab7bf2d7c3015431dcbc972afbaf68dfb5b9fadf8ce66d86fa90982c3bb"

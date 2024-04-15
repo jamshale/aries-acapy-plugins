@@ -321,7 +321,7 @@ def main(arg_1 = None):
                 os.system(
                     f'cd {plugin_name} && rm poetry.lock && poetry install --all-extras')
                 os.system(
-                    f'cd {plugin_name}/integration && rm poetry.lock && poetry install --all-extras')
+                    f'cd {plugin_name}/integration && rm poetry.lock && poetry install --all-extras --no-root')
                 
     # Install plugin globals
     elif selection == "3":
