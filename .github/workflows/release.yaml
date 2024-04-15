@@ -106,7 +106,7 @@ jobs:
               continue
             fi
             cd $current_folder
-            poetry install --all-extras
+            poetry install --with integration --extras aca-py
             if poetry run pytest; then
               echo "plugin $current_folder passed unit test check"
             else
