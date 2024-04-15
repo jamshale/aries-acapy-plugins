@@ -58,7 +58,7 @@ jobs:
           git checkout -b release-v0.12.0
           git add . 
           git push --set-upstream origin release-v0.12.0
-          gh pr create --reviewer jamshale --title "Release" --base main --head jamshale:releas-v0.12.0 
+          gh pr create --reviewer jamshale --title "Release" --body "To fill in" --base main --head jamshale:releas-v0.12.0 
 
     # git commit -m "Automated Pull Request"
     # git push --set-upstream origin main
