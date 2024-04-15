@@ -1,3 +1,4 @@
+"""v1.0 connection update protocol routes."""
 import functools
 import logging
 

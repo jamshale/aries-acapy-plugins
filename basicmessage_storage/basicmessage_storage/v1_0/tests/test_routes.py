@@ -114,4 +114,3 @@ class TestRoutes(AsyncTestCase):
             mock_config.return_value = asynctest.Mock(wallet_enabled=True)
             await plugin_connections_send_message(self.request)
             assert not mock_basic_message_rec.save.assert_called()
-            assert False
