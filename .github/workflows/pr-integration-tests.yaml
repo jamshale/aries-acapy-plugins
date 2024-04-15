@@ -3,11 +3,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - "**"
+      - "!release*"
   push:
     branches:
       - main
-      - '!release*'
   merge_group:
 
 jobs:
