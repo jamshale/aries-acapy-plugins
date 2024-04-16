@@ -41,7 +41,7 @@ jobs:
 
           tag_output=(git tag -n0 "*$version*")
           tags=0
-          for item in $items
+          for item in $tag_output
           do
             tags=$((tags+1))
           done
