@@ -181,17 +181,17 @@ jobs:
           git config --global user.email 'release-bot@users.noreply.github.com'
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
           git fetch --all
-          git checkout -b release-v${release}
+          git checkout -b release-v$release
           git add .
 
           for plugin in "${failed_plugins[@]}"; do
             git restore --staged $plugin
           done
 
-          python repo_manager.py 4
+          body=$(python repo_manager.py 4)
 
           git add ./*pyproject.toml
 
           git commit -s -m "Pre-Release Upgrades"
-          git push --set-upstream origin release-v${release}
-          gh pr create --title "Release for aries-cloudagent v${release}" --body "To fill in" --base main --head release-v${release} 
+          git push --set-upstream origin release-v$release
+          gh pr create --title "Release for aries-cloudagent v$release" --body $body --base main --head release-v$release 

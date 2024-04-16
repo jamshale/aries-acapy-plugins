@@ -273,11 +273,6 @@ def is_plugin_directory(plugin_name: str) -> bool:
 
 
 def main(arg_1 = None):
-    print("Checking poetry is available...")
-    response = os.system('which poetry')
-    if response == "":
-        print("Poetry is not available. Please install poetry.")
-        exit(1)
 
     options = """
         What would you like to do? 
@@ -291,6 +286,13 @@ def main(arg_1 = None):
         selection = arg_1
     else:
         selection = input(options)
+    
+    if (selection != "4"):
+        print("Checking poetry is available...")
+        response = os.system('which poetry')
+        if response == "":
+            print("Poetry is not available. Please install poetry.")
+            exit(1)
 
     # Create a new plugin
     if selection == "1":
@@ -333,7 +335,7 @@ def main(arg_1 = None):
 
     # Update plugins description with supported aries-cloudagent version
     elif selection == "4":
-        msg = """Update plugins description with supported aries-cloudagent version \n"""
+        msg = """The latest supported versions of aries-cloudagent for each plugin are as follows:\n"""
         print(msg)
         for plugin_name in os.listdir('./'):
             if is_plugin_directory(plugin_name):
@@ -343,7 +345,6 @@ def main(arg_1 = None):
                             next_line = next(file, None)
                             version = re.findall(r'"([^"]*)"', next_line)
                             break
-                print(f'Updating description in {plugin_name} with aries-cloudagent version {version[0]}\n')    
                 with open(f'./{plugin_name}/pyproject.toml', 'r') as file:
                     filedata = file.read()
                     linedata = filedata.split('\n')
@@ -351,11 +352,11 @@ def main(arg_1 = None):
                         line = linedata[i]
                         if 'description = ' in line:
                             description = re.findall(r'"([^"]*)"', line)
-                            print(description[0])
                             break
                 filedata = filedata.replace('description = "', f'description = "{description[0]}(Supported aries-cloudagent version: {version[0]})')
                 with open(f'./{plugin_name}/pyproject.toml', 'w') as file:
                     file.write(filedata)
+                print(f'{plugin_name} = {version[0]}')    
 
 
 
