@@ -1,6 +1,13 @@
 name: Create Release
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "release-*"
 
 permissions:
   contents: write
@@ -34,6 +41,9 @@ jobs:
           git fetch --all
 
           tag_output=(git tag -n0 "*$version*")
+
+          echo "Tag output: $tag_output"
+
           tags=0
           for item in $tag_output
           do
