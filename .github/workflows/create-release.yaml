@@ -45,8 +45,7 @@ jobs:
           echo "Tag output: $tag_output"
 
           tags=0
-          for item in $tag_output
-          do
+          for item in "${tag_output[@]}"; do
             tags=$((tags+1))
           done
 
@@ -57,7 +56,7 @@ jobs:
           then
             tag=$version
           else
-            tag="$version.$((tags+1))"
+            tag="$version.$tags"
           fi
 
           git tag -a $tag -m "Release $tag"
