@@ -40,12 +40,12 @@ jobs:
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
           git fetch --all
 
-          tag_output=(git tag -n0 "*$version*")
+          tag_output=$(git tag -n0 "*$version*")
 
-          echo "Tag output: $tag_output"
+          echo "Tag output: \n ${tag_output}"
 
           tags=0
-          for item in "${tag_output[@]}"; do
+          for item in "${tag_output}"; do
             tags=$((tags+1))
           done
 
