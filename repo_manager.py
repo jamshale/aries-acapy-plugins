@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import sys
 from copy import deepcopy
@@ -283,7 +284,8 @@ def main(arg_1 = None):
         (1) Create a new plugin
         (2) Update all plugin common poetry sections 
         (3) Upgrade plugin_global dependencies 
-        (4) Exit \n\nInput:  """
+        (4) Upadate plugins description with supported aries-cloudagent version
+        (5) Exit \n\nInput:  """
     
     if arg_1:
         selection = arg_1
@@ -328,6 +330,42 @@ def main(arg_1 = None):
         msg = """Upgrade plugin_global dependencies \n"""
         print(msg)
         os.system('cd plugin_globals && poetry lock')
+
+    # Update plugins description with supported aries-cloudagent version
+    elif selection == "4":
+        msg = """Update plugins description with supported aries-cloudagent version \n"""
+        print(msg)
+        for plugin_name in os.listdir('./'):
+            if is_plugin_directory(plugin_name):
+                with open(f'./{plugin_name}/poetry.lock', 'r') as file:
+                    for line in file:
+                        if 'name = "aries-cloudagent"' in line:
+                            next_line = next(file, None)
+                            version = re.findall(r'"([^"]*)"', next_line)
+                            break
+                print(f'Updating description in {plugin_name} with aries-cloudagent version {version[0]}\n')    
+                with open(f'./{plugin_name}/pyproject.toml', 'r') as file:
+                    filedata = file.read()
+                    linedata = filedata.split('\n')
+                    for i in range(len(linedata)):
+                        line = linedata[i]
+                        if 'description = ' in line:
+                            description = re.findall(r'"([^"]*)"', line)
+                            print(description[0])
+                            break
+                filedata = filedata.replace('description = "', f'description = "{description[0]}(Supported aries-cloudagent version: {version[0]})')
+                with open(f'./{plugin_name}/pyproject.toml', 'w') as file:
+                    file.write(filedata)
+
+
+
+
+    elif selection == "5":
+        print("Exiting...")
+        exit(0)
+    else:
+        print("Invalid selection. Please try again.")
+        main() 
 
 
 

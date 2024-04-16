@@ -186,6 +186,10 @@ jobs:
             git restore --staged $plugin
           done
 
+          python repo_manager.py 4
+
+          git add ./*pyproject.toml
+
           git commit -s -m "Pre-Release Upgrades"
           git push --set-upstream origin release-v0.12.0
           gh pr create --title "Release" --body "To fill in" --base main --head release-v0.12.0 
