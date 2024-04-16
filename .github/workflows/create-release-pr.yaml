@@ -1,10 +1,9 @@
 name: Create Release PR
 
-on:
-  pull_request:
-    types: [opened, reopened]
-    branches:
-      - "**"
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
 
 permissions:
   contents: write
