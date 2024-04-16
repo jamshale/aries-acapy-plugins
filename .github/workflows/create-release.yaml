@@ -1,0 +1,65 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - "main-testing"
+  pull_request:
+    branches:
+      - "release-*"
+
+permissions:
+  contents: write
+
+jobs:
+
+  checks:
+    name: "Create Release"
+    permissions: write-all
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+        run: |
+          echo "Creating release"
+
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
+
+          git config --global user.name 'Release Bot'
+          git config --global user.email 'release-bot@users.noreply.github.com'
+          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
+          git fetch --all
+
+          tag_output=(git tag -n0 "*$version*")
+          tags=0
+          for item in $items
+          do
+            tags=$((tags+1))
+          done
+
+          echo "Tags: $tags"
+          
+          tag=""
+          if [ $tags -eq 0 ]
+          then
+            tag=$version
+          else
+            tag="$version$((tags+1))"
+            git tag -a "$version.$tags" -m "Release $version"
+            git push origin "$version.$tags"
+            gh release create $version --title "Release for aries-cloudagent v$version" --notes "Release $version"
+          fi
+
+          git tag -a $tag -m "Release $tag"
+          git push origin $tag
+          gh release create $tag --title "Release for aries-cloudagent v$version" --notes "Release $tag"
+
