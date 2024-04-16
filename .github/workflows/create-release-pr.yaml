@@ -180,6 +180,7 @@ jobs:
 
           for plugin in "${failed_plugins[@]}"; do
             git restore --staged $plugin
+            git checkout -- $plugin
           done
 
           body=$(python repo_manager.py 4)
