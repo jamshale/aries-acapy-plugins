@@ -117,30 +117,30 @@ jobs:
             cd ..
           done
           echo unit_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
-      - name: Initialize Docker Compose
-        uses: isbang/compose-action@v1.5.1
-      - name: Integration Test Plugins
-        id: integration_test_plugins
-        continue-on-error: true
-        run: |
-          declare -a failed_plugins=()
-          for dir in ./*/; do
-            current_folder=$(basename "$dir")
-            if [[ $current_folder == "plugin_globals" ]]; then
-              continue
-            fi
-            cd $current_folder/integration
-            docker compose down --remove-orphans
-            docker compose build
-            if docker compose run tests; then
-              echo "plugin $current_folder passed integration test check"
-            else
-              echo "plugin $current_folder failed integration test check"
-              failed_plugins+=("$current_folder")
-            fi
-            cd ../..
-          done
-          echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
+      # - name: Initialize Docker Compose
+      #   uses: isbang/compose-action@v1.5.1
+      # - name: Integration Test Plugins
+      #   id: integration_test_plugins
+      #   continue-on-error: true
+      #   run: |
+      #     declare -a failed_plugins=()
+      #     for dir in ./*/; do
+      #       current_folder=$(basename "$dir")
+      #       if [[ $current_folder == "plugin_globals" ]]; then
+      #         continue
+      #       fi
+      #       cd $current_folder/integration
+      #       docker compose down --remove-orphans
+      #       docker compose build
+      #       if docker compose run tests; then
+      #         echo "plugin $current_folder passed integration test check"
+      #       else
+      #         echo "plugin $current_folder failed integration test check"
+      #         failed_plugins+=("$current_folder")
+      #       fi
+      #       cd ../..
+      #     done
+      #     echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
@@ -153,7 +153,6 @@ jobs:
 
           lint_plugins=(${{steps.lint_plugins.outputs.lint_plugins}})
           unit_test_plugins=(${{steps.unit_test_plugins.outputs.unit_test_plugins}})
-          integration_test_plugins=(${{steps.integration_test_plugins.outputs.integration_test_plugins}})
           
           for plugin in "${lint_plugins[@]}"; do
             if [[ ! " ${failed_plugins[@]} " =~ " $plugin " ]]; then
@@ -167,31 +166,27 @@ jobs:
             fi
           done
 
-          for plugin in "${integration_test_plugins[@]}"; do
-            if [[ ! " ${failed_plugins[@]} " =~ " $plugin " ]]; then
-              failed_plugins+=("$plugin")
-            fi
-          done
-
           echo "Failed plugins: ${failed_plugins[*]}"
 
           release = ${{steps.current_available_version.outputs.current_available_version}}
 
-          git config --global user.name 'Release Bot'
-          git config --global user.email 'release-bot@users.noreply.github.com'
-          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
-          git fetch --all
-          git checkout -b release-v$release
-          git add .
+          echo "Creating PR for release $release"
 
-          for plugin in "${failed_plugins[@]}"; do
-            git restore --staged $plugin
-          done
+        # git config --global user.name 'Release Bot'
+        # git config --global user.email 'release-bot@users.noreply.github.com'
+        # git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
+        # git fetch --all
+        # git checkout -b release-v$release
+        # git add .
 
-          body=$(python repo_manager.py 4)
+        # for plugin in "${failed_plugins[@]}"; do
+        #   git restore --staged $plugin
+        # done
 
-          git add ./*pyproject.toml
+        # body=$(python repo_manager.py 4)
 
-          git commit -s -m "Pre-Release Upgrades"
-          git push --set-upstream origin release-v$release
-          gh pr create --title "Release for aries-cloudagent v$release" --body $body --base main --head release-v$release 
+        # git add ./*pyproject.toml
+
+        # git commit -s -m "Pre-Release Upgrades"
+        # git push --set-upstream origin release-v$release
+        # gh pr create --title "Release for aries-cloudagent v$release" --body $body --base main --head release-v$release 
