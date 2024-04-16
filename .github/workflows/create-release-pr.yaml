@@ -190,4 +190,4 @@ jobs:
           git push --set-upstream origin "release-v$release"
 
           title="Release for aries-cloudagent v$release"
-          gh pr create --title "$titel" --body "$body" --base main --head "release-v$release" 
+          gh pr create --title "$title" --body "$body" --base main-testing --head "release-v$release" 
