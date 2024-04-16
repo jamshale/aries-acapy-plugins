@@ -171,21 +171,21 @@ jobs:
           release="${{steps.current_available_version.outputs.current_available_version}}"
           echo "Remote version = $release"
 
-        # git config --global user.name 'Release Bot'
-        # git config --global user.email 'release-bot@users.noreply.github.com'
-        # git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
-        # git fetch --all
-        # git checkout -b release-v$release
-        # git add .
+          git config --global user.name 'Release Bot'
+          git config --global user.email 'release-bot@users.noreply.github.com'
+          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
+          git fetch --all
+          git checkout -b "release-v$release"
+          git add .
 
-        # for plugin in "${failed_plugins[@]}"; do
-        #   git restore --staged $plugin
-        # done
+          for plugin in "${failed_plugins[@]}"; do
+            git restore --staged $plugin
+          done
 
-        # body=$(python repo_manager.py 4)
+          body=$(python repo_manager.py 4)
 
-        # git add ./*pyproject.toml
+          git add ./*pyproject.toml
 
-        # git commit -s -m "Pre-Release Upgrades"
-        # git push --set-upstream origin release-v$release
-        # gh pr create --title "Release for aries-cloudagent v$release" --body $body --base main --head release-v$release 
+          git commit -s -m "Pre-Release Upgrades"
+          git push --set-upstream origin "release-v$release"
+          gh pr create --title 'Release for aries-cloudagent "v$release"' --body $body --base main --head "release-v$release" 
