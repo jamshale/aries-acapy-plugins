@@ -1,4 +1,4 @@
-name: Release
+name: Create Release PR
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
 jobs:
 
   checks:
-    name: "Create Release"
+    name: "Create Release PR"
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
@@ -173,13 +173,15 @@ jobs:
             fi
           done
 
-          echo ${failed_plugins[*]}
+          echo "Failed plugins: ${failed_plugins[*]}"
+
+          release = ${{steps.current_available_version.outputs.current_available_version}}
 
           git config --global user.name 'Release Bot'
           git config --global user.email 'release-bot@users.noreply.github.com'
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamshale/aries-acapy-plugins
           git fetch --all
-          git checkout -b release-v0.12.0
+          git checkout -b release-v${release}
           git add .
 
           for plugin in "${failed_plugins[@]}"; do
@@ -191,5 +193,5 @@ jobs:
           git add ./*pyproject.toml
 
           git commit -s -m "Pre-Release Upgrades"
-          git push --set-upstream origin release-v0.12.0
-          gh pr create --title "Release" --body "To fill in" --base main --head release-v0.12.0 
+          git push --set-upstream origin release-v${release}
+          gh pr create --title "Release for aries-cloudagent v${release}" --body "To fill in" --base main --head release-v${release} 
