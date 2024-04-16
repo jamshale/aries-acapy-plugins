@@ -168,9 +168,8 @@ jobs:
 
           echo "Failed plugins: ${failed_plugins[*]}"
 
-          release = ${{steps.current_available_version.outputs.current_available_version}}
-
-          echo "Creating PR for release $release"
+          release="${{steps.current_available_version.outputs.current_available_version}}"
+          echo "Remote version = $release"
 
         # git config --global user.name 'Release Bot'
         # git config --global user.email 'release-bot@users.noreply.github.com'
