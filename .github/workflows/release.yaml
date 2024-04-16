@@ -188,4 +188,6 @@ jobs:
 
           git commit -s -m "Pre-Release Upgrades"
           git push --set-upstream origin "release-v$release"
-          gh pr create --title 'Release for aries-cloudagent "v$release"' --body "$body" --base main --head "release-v$release" 
+
+          title="Release for aries-cloudagent v$release"
+          gh pr create --title "$titel" --body "$body" --base main --head "release-v$release" 
