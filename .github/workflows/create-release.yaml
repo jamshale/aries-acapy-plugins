@@ -46,12 +46,14 @@ jobs:
             tags=$((tags+1))
           done
 
+          echo "Tags: $tags"
+          
           tag=""
           if [ $tags -eq 0 ]
           then
             tag=$version
           else
-            tag=$((tags+1))
+            tag="$version$((tags+1))"
             git tag -a "$version.$tags" -m "Release $version"
             git push origin "$version.$tags"
             gh release create $version --title "Release for aries-cloudagent v$version" --notes "Release $version"
