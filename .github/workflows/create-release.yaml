@@ -1,0 +1,27 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - "main-testing"
+  pull_request:
+    branches:
+      - "release-*"
+
+permissions:
+  contents: write
+
+jobs:
+
+  checks:
+    name: "Create Release"
+    permissions: write-all
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Release
+        run: |
+          echo "Creating release"
