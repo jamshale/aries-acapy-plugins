@@ -152,6 +152,8 @@ jobs:
           failed_plugins=()          
 
           lint_plugins=(${{steps.lint_plugins.outputs.lint_plugins}})
+          unit_test_plugins=(${{steps.unit_test_plugins.outputs.unit_test_plugins}})
+          integration_test_plugins=(${{steps.integration_test_plugins.outputs.integration_test_plugins}})
           
           for plugin in "${lint_plugins[@]}"; do
             if [[ ! " ${failed_plugins[@]} " =~ " $plugin " ]]; then
@@ -159,7 +161,19 @@ jobs:
             fi
           done
 
-          echo failed_plugins
+          for plugin in "${unit_test_plugins[@]}"; do
+            if [[ ! " ${failed_plugins[@]} " =~ " $plugin " ]]; then
+              failed_plugins+=("$plugin")
+            fi
+          done
+
+          for plugin in "${integration_test_plugins[@]}"; do
+            if [[ ! " ${failed_plugins[@]} " =~ " $plugin " ]]; then
+              failed_plugins+=("$plugin")
+            fi
+          done
+
+          echo $failed_plugins
 
           git config --global user.name 'Release Bot'
           git config --global user.email 'release-bot@users.noreply.github.com'
