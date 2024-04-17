@@ -190,7 +190,7 @@ jobs:
 
           body=$(python repo_manager.py 4)
 
-          echo "$body" >> RELEASES.md
+          echo "$body" | cat - RELEASES.md > temp && mv temp RELEASES.md
 
           git add ./*pyproject.toml
 
