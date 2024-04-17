@@ -335,7 +335,7 @@ def main(arg_1 = None):
 
     # Update plugins description with supported aries-cloudagent version
     elif selection == "4":
-        with open(f'./{plugin_name}/poetry.lock', 'r') as file:
+        with open('./plugin_globals/poetry.lock', 'r') as file:
             for line in file:
                 if 'name = "aries-cloudagent"' in line:
                     next_line = next(file, None)
