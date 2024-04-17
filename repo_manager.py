@@ -348,7 +348,7 @@ def main(arg_1 = None):
         print(msg)
         print("| Plugin Name | Supported aries-cloudagent version |")
         print("| --- | --- |")
-        for plugin_name in os.listdir('./').sort():
+        for plugin_name in os.listdir('./'):
             if is_plugin_directory(plugin_name):
                 with open(f'./{plugin_name}/poetry.lock', 'r') as file:
                     for line in file:
