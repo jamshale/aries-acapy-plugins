@@ -341,14 +341,11 @@ def main(arg_1 = None):
                     next_line = next(file, None)
                     global_version = re.findall(r'"([^"]*)"', next_line)
                     break
-        msg = f"""
-            ###Release v{global_version[0]}
-            The latest supported versions of aries-cloudagent for each plugin are as follows:\n
-        """
+        msg = f"""### Release v{global_version[0]}\n##### The latest supported versions of aries-cloudagent for each plugin are as follows:\n"""
         print(msg)
         print("| Plugin Name | Supported aries-cloudagent version |")
         print("| --- | --- |")
-        for plugin_name in os.listdir('./'):
+        for plugin_name in sorted(os.listdir('./')):
             if is_plugin_directory(plugin_name):
                 with open(f'./{plugin_name}/poetry.lock', 'r') as file:
                     for line in file:
@@ -368,7 +365,9 @@ def main(arg_1 = None):
                 with open(f'./{plugin_name}/pyproject.toml', 'w') as file:
                     file.write(filedata)
                 print(f'|{plugin_name} | {version[0]}|')    
-                print("---")
+        
+        print("***")
+        print("***")
 
 
 
