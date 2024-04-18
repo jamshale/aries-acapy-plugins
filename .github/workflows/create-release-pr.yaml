@@ -27,6 +27,7 @@ jobs:
       lint_plugins: ${{ steps.lint_plugins.outputs.lint_plugins }}
       unit_test_plugins: ${{ steps.unit_test_plugins.outputs.unit_test_plugins }}
       integration_test_plugins: ${{ steps.integration_test_plugins.outputs.integration_test_plugins }}
+      all_potential_upgrades: ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}
     defaults:
       run:
         working-directory: .
@@ -83,6 +84,12 @@ jobs:
         run: |
           python repo_manager.py 2
           echo "Upgrade all plugins"
+      - name: Get all potential Upgrades"
+        id: all_potential_upgrades
+        run: |
+          potential_upgrades=$(python repo_manager.py 5)
+          echo "Get all potential Upgrades"
+          echo all_potential_upgrades=$potential_upgrades >> $GITHUB_OUTPUT
       - name: Lint plugins
         id: lint_plugins
         continue-on-error: true
@@ -155,6 +162,8 @@ jobs:
         run: |
           echo "Merging failed plugins"
           failed_plugins=()          
+
+          echo "All potential upgrades: ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}"
 
           lint_plugins=(${{steps.lint_plugins.outputs.lint_plugins}})
           unit_test_plugins=(${{steps.unit_test_plugins.outputs.unit_test_plugins}})

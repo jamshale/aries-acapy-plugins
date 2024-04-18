@@ -99,10 +99,10 @@ jobs:
 
           body=$(python repo_manager.py 4)
 
-          body+="$'\n'$'\n' ##### Plugins upgrade this release: $'\n'"
+          body+=("##### Plugins upgrade this release:")
           upgraded_plugins=$(python repo_manager.py 5)
           for plugin in ${upgraded_plugins}; do
-            body+="- $plugin$'\n'"
+            body+=("- $plugin$'\n'")
           done
 
           git tag -a $release_tag -m "Release $tag"
