@@ -219,6 +219,7 @@ jobs:
           
           # Merge all failed plugins
 
+          potential_upgrades=(${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }})
           echo "All potential upgrades: ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}[*]"
 
           lint_plugins=(${{steps.lint_plugins.outputs.lint_plugins}})
@@ -277,8 +278,8 @@ jobs:
           has_upgrades=false
 
           echo 
-          for plugin in ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}[*]; do
-            for upgrade in ${upgraded_plugins}; do
+          for plugin in ${potential_upgrades[@]}; do
+            for upgrade in ${upgraded_plugins[@]}; do
               if [[ $plugin == *"$upgrade"* ]]; then
                 has_upgrades=true
                 break
