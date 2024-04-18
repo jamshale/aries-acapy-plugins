@@ -219,7 +219,7 @@ jobs:
           
           # Merge all failed plugins
 
-          echo "All potential upgrades: ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}"
+          echo "All potential upgrades: ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}[*]"
 
           lint_plugins=(${{steps.lint_plugins.outputs.lint_plugins}})
           unit_test_plugins=(${{steps.unit_test_plugins.outputs.unit_test_plugins}})
