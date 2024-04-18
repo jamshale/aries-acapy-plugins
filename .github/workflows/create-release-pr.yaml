@@ -107,9 +107,9 @@ jobs:
           python repo_manager.py 2
           echo "Upgrade all plugins"
       #----------------------------------------------
-      #       TODO: Get all potential Upgrades
+      #       Get all potential upgrades
       #----------------------------------------------
-      - name: Get all potential Upgrades
+      - name: Get all potential upgrades
         id: all_potential_upgrades
         run: |
           declare -a potential_upgrades=()
@@ -130,6 +130,7 @@ jobs:
                   potential_upgrades+=("$current_folder")
               fi
           done
+          echo "Potential upgrades: ${potential_upgrades[*]}"
           echo all_potential_upgrades=$potential_upgrades >> $GITHUB_OUTPUT
       #----------------------------------------------
       #       Collect plugins that fail linting
