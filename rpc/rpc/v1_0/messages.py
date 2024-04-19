@@ -68,6 +68,8 @@ class DRPCRequestMessageSchema(AgentMessageSchema):
 
         model_class = "DRPCRequestMessage"
 
+    _type = "https://didcomm.org/" + DRPC_REQUEST
+
     request = Request(
         required=True,
         error_messages={"null": "RPC request cannot be empty."},
@@ -82,6 +84,8 @@ class DRPCResponseMessageSchema(AgentMessageSchema):
         """DRPCResponseMessageSchema metadata."""
 
         model_class = "DRPCResponseMessage"
+
+    _type = "https://didcomm.org/" +  DRPC_RESPONSE
 
     response = Response(
         required=True,
