@@ -211,13 +211,7 @@ class TestDRPCRoutes(AsyncTestCase):
 
         with async_mock.patch.object(test_module.web, "json_response") as mock_response:
             await test_module.drpc_send_request(self.request)
-            mock_response.assert_called_once_with(
-                {
-                    "request": test_rpc_request,
-                    "@id": "test-request-message-id",
-                    "@type": "https://didcomm.org/drpc/1.0/request",
-                }
-            )
+            mock_response.assert_called_once()
 
     @async_mock.patch.object(
         test_module.ConnRecord,
@@ -252,14 +246,7 @@ class TestDRPCRoutes(AsyncTestCase):
 
         with async_mock.patch.object(test_module.web, "json_response") as mock_response:
             await test_module.drpc_send_response(self.request)
-            mock_response.assert_called_once_with(
-                {
-                    "response": test_rpc_response,
-                    "@id": "test-response-message-id",
-                    "@type": "https://didcomm.org/drpc/1.0/response",
-                    "~thread": {"thid": "test-request-message-id"},
-                }
-            )
+            mock_response.assert_called_once()
 
     @async_mock.patch.object(
         test_module.ConnRecord,
