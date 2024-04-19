@@ -1,5 +1,7 @@
 label: multitenant_provider
 
+auto-provision: true
+
 # Admin
 admin: [0.0.0.0, 3001]
 admin-insecure-mode: true # This should be false in production
@@ -27,6 +29,8 @@ plugin:
 genesis-url: http://test.bcovrin.vonx.io/genesis
 
 #Wallet
+wallet-type: askar
+wallet-storage-type: default
 wallet-name: test-provider-wallet
 wallet-key: test-provider-key
 

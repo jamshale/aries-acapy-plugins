@@ -37,7 +37,6 @@ def generate_mock_drpc_request_message(request):
     schema = test_module.DRPCRequestMessageSchema()
     msg = schema.load({"request": request})
     msg._id = "test-request-message-id"
-    msg._type = "https://didcomm.org/drpc/1.0/request"
     return msg
 
 
@@ -45,7 +44,6 @@ def generate_mock_drpc_response_message(thread_id, response):
     schema = test_module.DRPCResponseMessageSchema()
     msg = schema.load({"response": response})
     msg._id = "test-response-message-id"
-    msg._type = "https://didcomm.org/drpc/1.0/response"
     msg.assign_thread_id(thread_id)
     return msg
 
