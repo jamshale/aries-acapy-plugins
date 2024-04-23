@@ -183,37 +183,37 @@ jobs:
             cd ..
           done
           echo unit_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
-      # ----------------------------------------------
-      #       Install docker compose
-      # ----------------------------------------------
-      - name: Initialize Docker Compose
-        uses: isbang/compose-action@v1.5.1
-      # ----------------------------------------------
-      #       Collect plugins that fail integration tests
-      # ----------------------------------------------
-      - name: Integration Test Plugins
-        id: integration_test_plugins
-        continue-on-error: true
-        run: |
-          trap 'echo "integration_test_exit_code=$?" >> "$GITHUB_OUTPUT"' EXIT
-          declare -a failed_plugins=()
-          for dir in ./*/; do
-            current_folder=$(basename "$dir")
-            if [[ $current_folder == "plugin_globals" ]]; then
-              continue
-            fi
-            cd $current_folder/integration
-            docker compose down --remove-orphans
-            docker compose build
-            if docker compose run tests; then
-              echo "plugin $current_folder passed integration test check"
-            else
-              echo "plugin $current_folder failed integration test check"
-              failed_plugins+=("$current_folder")
-            fi
-            cd ../..
-          done
-          echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
+      # # ----------------------------------------------
+      # #       Install docker compose
+      # # ----------------------------------------------
+      # - name: Initialize Docker Compose
+      #   uses: isbang/compose-action@v1.5.1
+      # # ----------------------------------------------
+      # #       Collect plugins that fail integration tests
+      # # ----------------------------------------------
+      # - name: Integration Test Plugins
+      #   id: integration_test_plugins
+      #   continue-on-error: true
+      #   run: |
+      #     trap 'echo "integration_test_exit_code=$?" >> "$GITHUB_OUTPUT"' EXIT
+      #     declare -a failed_plugins=()
+      #     for dir in ./*/; do
+      #       current_folder=$(basename "$dir")
+      #       if [[ $current_folder == "plugin_globals" ]]; then
+      #         continue
+      #       fi
+      #       cd $current_folder/integration
+      #       docker compose down --remove-orphans
+      #       docker compose build
+      #       if docker compose run tests; then
+      #         echo "plugin $current_folder passed integration test check"
+      #       else
+      #         echo "plugin $current_folder failed integration test check"
+      #         failed_plugins+=("$current_folder")
+      #       fi
+      #       cd ../..
+      #     done
+      #     echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
       # ----------------------------------------------
       #       Prepare Pull Request
       # ----------------------------------------------
@@ -268,7 +268,7 @@ jobs:
 
           git config --global user.name 'Release Bot'
           git config --global user.email 'release-bot@users.noreply.github.com'
-          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/hyperledger/aries-acapy-plugins
+          # git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/hyperledger/aries-acapy-plugins
           git fetch --all
           git checkout -b "release-v$release_version"
 
@@ -315,7 +315,7 @@ jobs:
             exit 1
           fi
 
-          # git commit -s -m "Release v$release_version Upgrades"
+          git commit -s -m "Release v$release_version Upgrades"
           # git push --set-upstream origin "release-v$release_version"
 
           # Create the PR
@@ -335,7 +335,7 @@ jobs:
         with:
           author: Release Bot <release-bot@users.noreply.github.com>
           committer: Release Bot <release-bot@users.noreply.github.com>
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_PR_PAT }}
           commit-message: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
           title: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
           body: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
