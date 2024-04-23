@@ -315,8 +315,8 @@ jobs:
             exit 1
           fi
 
-          git commit -s -m "Release v$release_version Upgrades"
-          git push --set-upstream origin "release-v$release_version"
+          # git commit -s -m "Release v$release_version Upgrades"
+          # git push --set-upstream origin "release-v$release_version"
 
           # Create the PR
 
