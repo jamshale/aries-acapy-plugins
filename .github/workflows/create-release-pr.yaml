@@ -335,7 +335,7 @@ jobs:
         with:
           author: ${{ github.actor }} <${{ github.event.pusher.email }}>
           committer: ${{ github.actor }} <${{ github.event.pusher.email }}
-          token: ${{ secrets.BOT_PR_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
           title: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
           body: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
