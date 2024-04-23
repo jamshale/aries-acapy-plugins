@@ -266,9 +266,9 @@ jobs:
 
           # Configure the git bot
 
-          git config --global user.name 'Release Bot'
-          git config --global user.email 'release-bot@users.noreply.github.com'
-          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/hyperledger/aries-acapy-plugins
+          # git config --global user.name 'Release Bot'
+          # git config --global user.email 'release-bot@users.noreply.github.com'
+          # git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/hyperledger/aries-acapy-plugins
           git fetch --all
           git checkout -b "release-v$release_version"
 
@@ -315,7 +315,7 @@ jobs:
             exit 1
           fi
 
-          # git commit -s -m "Release v$release_version Upgrades"
+          git commit -s -m "Release v$release_version Upgrades"
           # git push --set-upstream origin "release-v$release_version"
 
           # Create the PR
@@ -335,7 +335,7 @@ jobs:
         with:
           author: Release Bot <release-bot@users.noreply.github.com>
           committer: Release Bot <release-bot@users.noreply.github.com>
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_PR_PAT }}
           commit-message: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
           title: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
           body: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
