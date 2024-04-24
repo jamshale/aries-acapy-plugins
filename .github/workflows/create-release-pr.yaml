@@ -28,6 +28,7 @@ jobs:
       integration_test_plugins: ${{ steps.integration_test_plugins.outputs.integration_test_plugins }}
       integration_test_exit_code: ${{ steps.integration_test_plugins.outputs.integration_test_exit_code }}
       all_potential_upgrades: ${{ steps.all_potential_upgrades.outputs.all_potential_upgrades }}
+      pr_body: ${{ steps.prepare_pr.outputs.pr_body }}
     defaults:
       run:
         working-directory: .
@@ -214,20 +215,22 @@ jobs:
             cd ../..
           done
           echo integration_test_plugins=${failed_plugins[*]} >> $GITHUB_OUTPUT
-      - name: Create Pull Request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+      #----------------------------------------------
+      #       Integration Test Failure Check
+      #----------------------------------------------
+      - name: Integration Test Failure Check
+        if: ${{ steps.integration_test_plugins.outputs.integration_test_exit_code }} == 17
+        run: |
+          echo "Integration tests failed with exit code 17. Skipping commit and release"
+          echo integration_test_exit_code=17 >> $GITHUB_OUTPUT
+      # ----------------------------------------------
+      #       Prepare Pull Request
+      # ----------------------------------------------
+      - name: Prepare Pull Request 
+        id: prepare_pr
         run: |
           echo "Merging failed plugins"
           failed_plugins=()
-
-          integration_test_exit_code="${{ steps.integration_test_plugins.outputs.integration_test_exit_code }}"
-          echo "Integration test exit code: $integration_test_exit_code"
-
-          if [[ $integration_test_exit_code == "17" ]]; then
-            echo "Integration tests failed with exit code 17. Skipping commit and release"
-            exit 1
-          fi
           
           # Merge all failed plugins
 
@@ -267,9 +270,6 @@ jobs:
 
           git config --global user.name 'Release Bot'
           git config --global user.email 'release-bot@users.noreply.github.com'
-          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/hyperledger/aries-acapy-plugins
-          git fetch --all
-          git checkout -b "release-v$release_version"
 
           # Add all the changed files and then remove the failed plugins
 
@@ -296,7 +296,6 @@ jobs:
           upgraded_plugins=$(python repo_manager.py 5)
           has_upgrades=false
 
-          echo 
           for plugin in ${potential_upgrades[@]}; do
             for upgrade in ${upgraded_plugins[@]}; do
               if [[ $plugin == *"$upgrade"* ]]; then
@@ -315,14 +314,31 @@ jobs:
           fi
 
           git commit -s -m "Release v$release_version Upgrades"
-          git push --set-upstream origin "release-v$release_version"
-
-          # Create the PR
-
           details="Plugins upgraded this release: "
           for plugin in ${upgraded_plugins}; do
             details="$details $plugin"
           done
 
-          title="Release for aries-cloudagent v$release_version"
-          gh pr create --title "$title" --body "$body $details" --base main --head "release-v$release_version" 
+          # Prepare the PR body
+
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "pr_body<<$EOF" >> $GITHUB_OUTPUT
+          echo "$body $details" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+      #----------------------------------------------
+      #       Create Release PR
+      #----------------------------------------------
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          author: Release Bot <release-bot@users.noreply.github.com>
+          committer: Release Bot <release-bot@users.noreply.github.com>
+          token: ${{ secrets.BOT_PR_PAT }}
+          commit-message: "Release v${{ steps.current_available_version.outputs.current_available_version }}"
+          title: "Release for aries-cloudagent v${{ steps.current_available_version.outputs.current_available_version }}"
+          body: "Release v${{ steps.prepare_pr.outputs.pr_body }}"
+          branch: "release-v${{ steps.current_available_version.outputs.current_available_version }}"
+          base: "main"
+          draft: false
+          signoff: true
+          delete-branch: true
