@@ -295,7 +295,9 @@ jobs:
           echo "$body" | cat - RELEASES.md > temp && mv temp RELEASES.md
 
           # Check if there are any upgrades
-          upgraded_plugins=($(python repo_manager.py 5))
+          upgraded_plugins=$(python repo_manager.py 5)
+
+          echo "Upgraded plugins: $upgraded_plugins"
 
           for upgrade in ${upgraded_plugins[@]}; do
             echo "Upgrade Detected for $upgrade"
