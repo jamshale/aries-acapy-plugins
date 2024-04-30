@@ -1,4 +1,3 @@
-"""Basic Messages Storage Model classes and schemas."""
 from aries_cloudagent.core.profile import ProfileSession
 from aries_cloudagent.messaging.models.base_record import BaseRecord, BaseRecordSchema
 from aries_cloudagent.messaging.valid import (
