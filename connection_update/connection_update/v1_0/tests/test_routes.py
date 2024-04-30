@@ -39,7 +39,6 @@ class TestRoutes(AsyncTestCase):
 
         mock_retrieve.return_value.save.assert_called
         assert mock_retrieve.return_value.alias == 'test-alias'
-        assert False
 
     async def test_register(self):
         mock_app = async_mock.MagicMock()
