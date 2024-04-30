@@ -88,7 +88,7 @@ def test_deleting_wallet_invalidates_token(admin):
     time.sleep(0.1)
 
     response = admin.get_connections(wallet_config["token"])
-    assert response.status_code == 401
+    assert response.status_code == 403
 
 
 def get_multiple_tokens_from_new_wallet(admin: Agent, remove_wallet: bool = False):
