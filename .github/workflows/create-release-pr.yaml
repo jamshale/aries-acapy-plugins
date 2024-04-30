@@ -295,9 +295,9 @@ jobs:
           echo "$body" | cat - RELEASES.md > temp && mv temp RELEASES.md
 
           # Check if there are any upgrades
-          upgraded_plugins=$(python repo_manager.py 5)
-          has_upgrades=false
+          upgraded_plugins=($(python repo_manager.py 5))
 
+          has_upgrades=false
           for plugin in ${potential_upgrades[@]}; do
             for upgrade in ${upgraded_plugins[@]}; do
               if [[ $plugin == *"$upgrade"* ]]; then
@@ -317,14 +317,24 @@ jobs:
 
           # Update the release notes with the upgraded plugins
 
-          details="Plugins upgraded this release: "
-          for plugin in ${upgraded_plugins}; do
-            details="$details $plugin"
+          details=$(printf '#### Plugins upgraded this release: \n\t - ')
+
+          # For replacing the first occurence of ' - ' with the 
+          # details using `sed` command we need an extra escape character
+          replace_details=$(printf 'Plugins upgraded this release: \\n\\t - ')
+
+          count=${#upgraded_plugins[*]}
+          for i in $(seq 0 "$(("$count" - 2))" );
+          do
+              details=$(printf '%s %s \n\t - ' "$details" "${upgraded_plugins[$i]}")
+              replace_details=$(printf '%s %s \\n\\t - ' "$replace_details" "${upgraded_plugins[$i]}")
           done
+          details=$(printf '%s %s \n' "$details" "${upgraded_plugins[$count - 1]}")
+          replace_details=$(printf '%s %s \\n' "$replace_details" "${upgraded_plugins[$count - 1]}")
 
           # Replace the first occurence of ' - ' with the details
 
-          sed -i "0,/\s\-\s/s// - ${details}/" RELEASES.md
+          sed -i "0,/\s\-\s/s// - $(printf '%s ' ${replace_details})/" RELEASES.md
 
           # Add the updated pyproject.toml and RELEASES.md files
           git add ./*pyproject.toml
