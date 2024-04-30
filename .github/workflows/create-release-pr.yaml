@@ -321,7 +321,7 @@ jobs:
 
           upgraded_plugins=("${upgraded_plugins[@]}")
           count=${#upgraded_plugins[*]}
-          for i in $(seq 0 "$(("$count" - 1))" );
+          for i in $(seq 0 "$(("$count" - 2))" );
           do
               details=$(printf '%s %s \n\t - ' "$details" "${upgraded_plugins[$i]}")
           done
