@@ -45,4 +45,4 @@ class TestRoutes(AsyncTestCase):
         mock_app.add_routes = async_mock.MagicMock()
 
         await test_module.register(mock_app)
-        mock_app.add_routes.assert_called()
+        mock_app.add_routes.assert_called() is False
