@@ -437,6 +437,8 @@ def main(arg_1 = None):
         output = ""
         for plugin in plugins_on_old_release:
             output += f'{plugin} '
+
+        print(output)
     elif selection == "6":
         print("Exiting...")
         exit(0)
