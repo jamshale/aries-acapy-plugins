@@ -37,7 +37,7 @@ flowchart TB
     CheckChangeSet --> |Updated lock files| ConfigureGit[Configure Git]
     ConfigureGit --> GetReleaseTags[Get Release Tags - Based on ACA-PY Version]
     GetReleaseTags --> TagsExist{Tags Exist}
-    TagsExist --> |Yes| IncrementPatch[Increment Patch]
+    TagsExist --> |Yes| IncrementPatch[Increment Patch Version. Ex: 1.0.0 -> 1.0.0.1 or 1.0.0.1 -> 1.0.0.2]
     TagsExist --> |No| CreateTagOnACAPYVersion[Create Tag on ACA-PY Version]
     IncrementPatch --> GetReleaseNotes[Get Release Notes and Plugins That Updated]
     CreateTagOnACAPYVersion --> GetReleaseNotes
