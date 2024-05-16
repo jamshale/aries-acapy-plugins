@@ -95,7 +95,8 @@ jobs:
           echo ${{ steps.current_global_version.outputs.current_global_version }}
 
           # Get the latest version
-          version=${{ steps.current_available_version.outputs.current_global_version }}
+          remote_version=$(pip index versions aries-cloudagent)
+          version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
 
           # Set the git config
           git config --global user.name 'Release Bot'
