@@ -68,7 +68,7 @@ jobs:
               for plugin in ${upgraded_plugins}; do
                 lock_version=$(grep -A1 'name = "aries-cloudagent"' $file | grep -v 'name = "aries-cloudagent"')
                 version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
-                if [[$(sem_version $current_global_version -ge $(sem_version $version)]]; then
+                if [[$(sem_version $current_global_version) -ge $(sem_version $version)]]; then
                   echo "Upgrade Detected for $plugin in file $file"
                   found_upgrade=true
                 fi
