@@ -64,13 +64,16 @@ jobs:
           }
 
           for file in ${get_changed_files}; do
+            echo "00000000000000000"
             if [[ $file == *"/poetry.lock"* ]] && [[ $file != *"integration/poetry.lock"* ]]; then
+              echo "11111111111111111"
               lock_version=$(grep -A1 'name = "aries-cloudagent"' $file | grep -v 'name = "aries-cloudagent"')
               version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
+              echo "File = $file"
               echo "Version = $version"
               echo "Global Version = $current_global_version"
               if [[ $(sem_version $current_global_version) -gt $(sem_version $version) ]]; then
-                echo "Upgrade Detected for $plugin in file $file"
+                echo "Upgrade Detected in $file"
                 found_upgrade=true
                 break
               fi
