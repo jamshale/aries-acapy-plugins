@@ -72,7 +72,7 @@ jobs:
               echo "File = $file"
               echo "Version = $lock_version"
               echo "Global Version = $current_global_version"
-              if [[ "$lock_version" ]] && [[ $(sem_version $current_global_version) -ge $(sem_version $lock_version) ]]; then
+              if [[ "$lock_version" ]] && [[ $(sem_version $current_global_version) -lt $(sem_version $lock_version) ]]; then
                 echo "Upgrade Detected in $file"
                 found_upgrade=true
                 break
