@@ -64,17 +64,15 @@ jobs:
           }
 
           for file in ${get_changed_files}; do
-            echo "00000000000000000"
             number_of_slashes=$(grep -o "/" <<< "$file" | wc -l)
             # Check if the lock file is rooted
             if [[ $file == *"/poetry.lock"* ]] && [[ "$number_of_slashes" == 1  ]]; then
-              echo "11111111111111111"
               changes="$(git diff ${{ github.event.before }} ${{ github.event.after }} $file)"
               lock_version=$(echo "$changes" | grep -A1 'name = "aries-cloudagent"' | head -n 2 | tail -n 1 | awk '{print $3}' | tr -d '"')
               echo "File = $file"
               echo "Version = $lock_version"
               echo "Global Version = $current_global_version"
-              if [[! -n "$lock_version"]] && [[ $(sem_version $current_global_version) -ge $(sem_version $lock_version) ]]; then
+              if [[ "$lock_version" ]] && [[ $(sem_version $current_global_version) -ge $(sem_version $lock_version) ]]; then
                 echo "Upgrade Detected in $file"
                 found_upgrade=true
                 break
