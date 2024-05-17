@@ -190,17 +190,17 @@ cached-property = ">=1.5,<2.0"
 
 [[package]]
 name = "aries-cloudagent"
-version = "0.12.1"
+version = "0.12.0"
 description = "Hyperledger Aries Cloud Agent Python (ACA-Py) is a foundation for building decentralized identity applications and services running in non-mobile environments."
 optional = true
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "aries_cloudagent-0.12.1-py3-none-any.whl", hash = "sha256:dcb6d6ed566bc3299ade60def33f1a1ada06276ad77a37e53210cda6c3fe9dd3"},
-    {file = "aries_cloudagent-0.12.1.tar.gz", hash = "sha256:de6da85c225ac641050a208c192e4b18882a0e7a94ed4879ed9b401ce450ecbc"},
+    {file = "aries_cloudagent-0.12.0-py3-none-any.whl", hash = "sha256:0416d58fe53fe90107d4f7a77349d5b9082cb18dba1051bb9bf9d7c4ba5e3054"},
+    {file = "aries_cloudagent-0.12.0.tar.gz", hash = "sha256:dee04b11bd1eafeb866a0ec8437c9fa81dc607fcf3e7798976346ee08b58a9b9"},
 ]
 
 [package.dependencies]
-aiohttp = ">=3.9.4,<3.10.0"
+aiohttp = ">=3.9.2,<3.10.0"
 aiohttp-apispec = ">=2.2.1,<2.3.0"
 aiohttp-cors = ">=0.7.0,<0.8.0"
 apispec = ">=3.3.0,<3.4.0"
@@ -234,7 +234,7 @@ sd-jwt = ">=0.10.3,<0.11.0"
 unflatten = ">=0.1,<0.2"
 
 [package.extras]
-askar = ["anoncreds (==0.2.0)", "aries-askar (>=0.3.0,<0.4.0)", "indy-credx (>=1.1.1,<1.2.0)", "indy-vdr (>=0.4.0,<0.5.0)"]
+askar = ["anoncreds (==0.2.0.dev11)", "aries-askar (>=0.3.0,<0.4.0)", "indy-credx (>=1.1.1,<1.2.0)", "indy-vdr (>=0.4.0,<0.5.0)"]
 bbs = ["ursa-bbs-signatures (>=1.0.1,<1.1.0)"]
 indy = ["python3-indy (>=1.11.1,<2.0.0)"]
 
@@ -2573,4 +2573,4 @@ aca-py = ["aries-cloudagent"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "163a3e6e9d1e44e63d7e0d8aa0243db33ee4071e2ca9b212794cc185dd068176"
+content-hash = "e62918ecdc3d13b944266db90993a18ee4275c9ba8beed5e6c4bb501c4ddb2a3"
