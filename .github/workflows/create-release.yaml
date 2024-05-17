@@ -72,9 +72,9 @@ jobs:
               changes="$(git diff ${{ github.event.before }} ${{ github.event.after }} $file)"
               lock_version=$(echo "$changes" | grep -A1 'name = "aries-cloudagent"' | head -n 2 | tail -n 1 | awk '{print $3}' | tr -d '"')
               echo "File = $file"
-              echo "Version = $version"
+              echo "Version = $lock_version"
               echo "Global Version = $current_global_version"
-              if [[! -n "$vresion"]] && [[ $(sem_version $current_global_version) -ge $(sem_version $version) ]]; then
+              if [[! -n "$lock_version"]] && [[ $(sem_version $current_global_version) -ge $(sem_version $lock_version) ]]; then
                 echo "Upgrade Detected in $file"
                 found_upgrade=true
                 break
