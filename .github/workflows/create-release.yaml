@@ -74,7 +74,7 @@ jobs:
               echo "File = $file"
               echo "Version = $version"
               echo "Global Version = $current_global_version"
-              if [[ $(sem_version $current_global_version) -eq $(sem_version $version) ]]; then
+              if [[ $(sem_version $current_global_version) -lt $(sem_version $version) ]]; then
                 echo "Upgrade Detected in $file"
                 found_upgrade=true
                 break
