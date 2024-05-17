@@ -69,9 +69,10 @@ jobs:
               version=$(grep -oP '(?<=").*?(?=")' <<< "$lock_version")
               echo "Version = $version"
               echo "Global Version = $current_global_version"
-              if [[ $(sem_version $current_global_version) -ge $(sem_version $version) ]]; then
+              if [[ $(sem_version $current_global_version) -gt $(sem_version $version) ]]; then
                 echo "Upgrade Detected for $plugin in file $file"
                 found_upgrade=true
+                break
               fi
             fi
           done
