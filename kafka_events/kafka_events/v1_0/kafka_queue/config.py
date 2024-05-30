@@ -7,7 +7,7 @@ from typing import List, Mapping, Optional, Union
 from aries_cloudagent.config.base import BaseSettings
 from aries_cloudagent.config.plugin_settings import PluginSettings
 from aries_cloudagent.config.settings import Settings
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class ProducerConfig(BaseModel, SecurityProtocol):
     class Config:
         """Configuration for producer."""
 
-        extra = 'allow'
+        extra = "allow"
         alias_generator = _alias_generator
         populate_by_name = True
 
@@ -93,7 +93,7 @@ class ConsumerConfig(BaseModel, SecurityProtocol):
     class Config:
         """Configuration for consumer."""
 
-        extra = 'allow'
+        extra = "allow"
         alias_generator = _alias_generator
         populate_by_name = True
 
@@ -172,5 +172,7 @@ def get_config(root_settings: BaseSettings) -> KafkaConfig:
         config = KafkaConfig.default()
 
     LOGGER.debug("Returning config: %s", config.model_dump_json(indent=2))
-    LOGGER.debug("Returning config(aliases): %s", config.model_dump_json(by_alias=True, indent=2))
+    LOGGER.debug(
+        "Returning config(aliases): %s", config.model_dump_json(by_alias=True, indent=2)
+    )
     return config
