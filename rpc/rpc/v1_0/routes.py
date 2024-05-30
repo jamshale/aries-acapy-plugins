@@ -52,7 +52,7 @@ class DRPCRequest(BaseModel):
 
         schema_class = "DRPCRequestJSONSchema"
 
-    def __init__(self, *, request: dict = None, **kwargs):
+    def __init__(self, *, request: dict = {}, **kwargs):
         """Initialize DIDComm RPC Request Model."""
 
         super().__init__(**kwargs)
@@ -67,7 +67,7 @@ class DRPCResponse(BaseModel):
 
         schema_class = "DRPCResponseJSONSchema"
 
-    def __init__(self, *, response: dict = None, thread_id: str = None, **kwargs):
+    def __init__(self, *, response: dict = {}, thread_id: str = {}, **kwargs):
         """Initialize DIDComm RPC Response Model."""
 
         super().__init__(**kwargs)
