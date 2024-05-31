@@ -52,7 +52,7 @@ class OutboundPayload(RedisQueuePayload):
     @field_validator("payload", mode="before")
     @classmethod
     def decode_payload_to_bytes(cls, v):
-        """Decode payload model to bytes.""" ""
+        """Decode payload model to bytes."""
         assert isinstance(v, str)
         return base64.urlsafe_b64decode(v)
 
