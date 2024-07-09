@@ -7,7 +7,7 @@ from typing import List, Mapping, Optional, Union
 from aries_cloudagent.config.base import BaseSettings
 from aries_cloudagent.config.plugin_settings import PluginSettings
 from aries_cloudagent.config.settings import Settings
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,9 +44,9 @@ class ProducerConfig(BaseModel, SecurityProtocol):
     class Config:
         """Configuration for producer."""
 
-        extra = "allow"
+        extra = Extra.allow
         alias_generator = _alias_generator
-        populate_by_name = True
+        allow_population_by_field_name = True
 
     @classmethod
     def default(cls):
@@ -56,7 +56,7 @@ class ProducerConfig(BaseModel, SecurityProtocol):
     @property
     def security_protocol(self) -> str:
         """Return the security protocol."""
-        return self.model_dump().get("security_protocol")
+        return self.dict().get("security_protocol")
 
 
 class EventsConfig(BaseModel):
@@ -69,7 +69,7 @@ class EventsConfig(BaseModel):
         """Configuration for events."""
 
         alias_generator = _alias_generator
-        populate_by_name = True
+        allow_population_by_field_name = True
 
     @classmethod
     def default(cls):
@@ -93,9 +93,9 @@ class ConsumerConfig(BaseModel, SecurityProtocol):
     class Config:
         """Configuration for consumer."""
 
-        extra = "allow"
+        extra = Extra.allow
         alias_generator = _alias_generator
-        populate_by_name = True
+        allow_population_by_field_name = True
 
     @classmethod
     def default(cls):
@@ -105,7 +105,7 @@ class ConsumerConfig(BaseModel, SecurityProtocol):
     @property
     def security_protocol(self) -> bool:
         """Return the security protocol."""
-        return self.model_dump().get("security_protocol")
+        return self.dict().get("security_protocol")
 
 
 class InboundConfig(BaseModel):
@@ -118,7 +118,7 @@ class InboundConfig(BaseModel):
         """Configuration for inbound."""
 
         alias_generator = _alias_generator
-        populate_by_name = True
+        allow_population_by_field_name = True
 
     @classmethod
     def default(cls):
@@ -171,8 +171,6 @@ def get_config(root_settings: BaseSettings) -> KafkaConfig:
         LOGGER.warning("Using default configuration")
         config = KafkaConfig.default()
 
-    LOGGER.debug("Returning config: %s", config.model_dump_json(indent=2))
-    LOGGER.debug(
-        "Returning config(aliases): %s", config.model_dump_json(by_alias=True, indent=2)
-    )
+    LOGGER.debug("Returning config: %s", config.json(indent=2))
+    LOGGER.debug("Returning config(aliases): %s", config.json(by_alias=True, indent=2))
     return config
