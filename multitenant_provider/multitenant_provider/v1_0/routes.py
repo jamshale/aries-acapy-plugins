@@ -34,6 +34,7 @@ class PluginCreateWalletRequestSchema(CreateWalletRequestSchema):
 
         Args:
             data: The data to validate
+            kwargs: Additional keyword arguments
 
         Raises:
             ValidationError: If any of the fields do not validate
