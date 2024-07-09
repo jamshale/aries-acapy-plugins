@@ -23,7 +23,7 @@ ARG install_flags='--with integration --extras aca-py'
 RUN poetry install ${install_flags}
 USER $user
 
-FROM python:12-bullseye
+FROM python:3.12-bullseye
 WORKDIR /usr/src/app
 COPY --from=base /usr/src/app/.venv /usr/src/app/.venv
 ENV PATH="/usr/src/app/.venv/bin:$PATH"
