@@ -64,7 +64,7 @@ class Agent:
 
     @unwrap_json_response
     @fail_if_not_ok("Failed to remove wallet")
-    def remove_wallet(self, wallet_id: str, payload: dict = None):
+    def remove_wallet(self, wallet_id: str, payload: dict = {}):
         """Remove wallet."""
         return post(
             self.url, path=f"/multitenancy/wallet/{wallet_id}/remove", data=payload

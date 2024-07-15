@@ -42,10 +42,12 @@ plugin-config-value:
  - multitenant_provider.errors.on_unneeded_wallet_key=true
 ```
 
-#### askar vs basic/indy
+#### multi wallet / single wallet
 
-There are 2 multitoken manager classes provided in this plugin: one for indy wallet types, one for askar wallet types.  
-If there is no specific configuration provided for `multitenant_provider.manager.class_name`, we will look at the `wallet_type` (not the `multitenancy-config.wallet_type`). if `wallet_type=askar` then we will load `multitenant_provider.v1_0.manager.AskarMultitokenMultitenantManager` else we will load `multitenant_provider.v1_0.manager.BasicMultitokenMultitenantManager`.
+There are 2 multitoken manager classes provided in this plugin: one is for crating tenant with their own wallets. This should be used for indy wallets. Indy wallets cannot be shared between tenants. The other is for creating tenants with one wallet. Askar wallets can be shared between tenants.  
+
+The default class is `BasicMultitokenMultitenantManager` which creates a new wallet for each tenant. If you want to use a single wallet for all askar tenants, you can use the `SingleWalletAskarMultitokenMultitenantManager` class.
+
 
 ### build and run
 

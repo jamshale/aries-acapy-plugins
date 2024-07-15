@@ -22,7 +22,6 @@ create_wallet_playload = {
     "label": "Provider",
     "wallet_dispatch_type": "default",
     "wallet_key": "test-wallet-key",  # replace
-    "wallet_key_derivation": "RAW",
     "wallet_name": "test-wallet-name",  # replace
     "wallet_type": "askar",
     "wallet_webhook_urls": ["http://localhost:8022/webhooks"],

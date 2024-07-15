@@ -15,7 +15,7 @@ endpoint:
   - http://host.docker.internal:3000
 
 plugin-config-value:
-  - multitenant_provider.manager.class_name="multitenant_provider.v1_0.manager.AskarMultitokenMultitenantManager"
+  # - multitenant_provider.manager.class_name="multitenant_provider.v1_0.manager.SingleWalletAskarMultitokenMultitenantManager"
   - multitenant_provider.manager.always_check_provided_wallet_key=true
   - multitenant_provider.errors.on_unneeded_wallet_key=false
   - multitenant_provider.token_expiry.units=minutes
@@ -40,7 +40,6 @@ jwt-secret: insecure-jwt-secret
 multitenant-admin: true
 
 log-level: info
-log-file: /aca-py.log
 
 auto-accept-invites: true
 auto-respond-messages: true
