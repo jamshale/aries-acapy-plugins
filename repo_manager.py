@@ -303,9 +303,6 @@ def update_all_poetry_locks():
             subprocess.run(["poetry", "lock"], cwd=root)
 
 def upgrade_library_in_all_plugins(library: str = None):
-    if library is None:
-        library = input("Enter the library to upgrade: ")
-        
     for root, _, files in os.walk("."):
         if "poetry.lock" in files:
             with open(f"{root}/poetry.lock", "r") as file:
