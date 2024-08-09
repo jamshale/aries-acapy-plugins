@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "basicmessage_storage"
 version = "0.1.0"
-description = " (Supported aries-cloudagent version: 0.12.1) "
+description = " (Supported aries-cloudagent version: 0.12.2) "
 authors = ["Jason Sherman <tools@usingtechnolo.gy>"]
 
 [tool.poetry.dependencies]
@@ -19,7 +19,7 @@ aca-py = ["aries-cloudagent"]
 ruff = "^0.5.0"
 black = "~24.4.2"
 pytest = "^8.2.0"
-pytest-asyncio = "~0.23.7"
+pytest-asyncio = "^0.23.7"
 pytest-cov = "^5.0.0"
 pytest-ruff = "^0.3.2"
 
