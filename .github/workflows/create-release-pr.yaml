@@ -333,8 +333,8 @@ jobs:
 
           # Update the release notes with the upgraded plugins. 
           # For replacing with the sed command we need to double escape the newline and tab characters.
-          details=$(printf '#### Plugins upgraded this release: \n\t - ')
-          double_escape_details=$(printf '#### Plugins upgraded this release: \\n\\t - ')
+          details=$(printf '### Plugins Upgraded For ACA-Py Release %s \n\t - ' '$release_version')
+          double_escape_details=$(printf '### Plugins Upgraded For ACA-Py Release %s \\n\\t - ' '$release_version')
 
           # For replacing the first occurence of ' - ' with the details
           count=${#upgraded_plugins[*]}

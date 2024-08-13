@@ -404,10 +404,10 @@ def main(arg_1=None, arg_2=None):
                     global_version = re.findall(r'"([^"]*)"', next_line)
                     break
         # Create and output the markdown release notes
-        msg = f"""### Release v{global_version[0]}\n##### The latest supported versions of aries-cloudagent for each plugin are as follows:\n"""
+        msg = f"""## ACA-Py Release {global_version[0]}\n"""
         print(msg)
         # Markdown table header
-        print("| Plugin Name | Supported aries-cloudagent version |")
+        print("| Plugin Name | Supported ACA-Py Release |")
         print("| --- | --- |")
         for plugin_name in sorted(os.listdir("./")):
             if is_plugin_directory(plugin_name):
@@ -470,14 +470,14 @@ def main(arg_1=None, arg_2=None):
         with open("RELEASES.md", "r") as file:
             last_releases = []
             for line in file:
-                if f"### Release v{global_version[0]}" in line:
+                if f"## ACA-Py Release {global_version[0]}" in line:
                     line = next(file)
                     line = next(file)
                     line = next(file)
                     while "***" not in line:
                         if (
                             line
-                            != "| Plugin Name | Supported aries-cloudagent version |\n"
+                            != "| Plugin Name | Supported ACA-Py Release |\n"
                             and line != "| --- | --- |\n"
                         ):
                             last_releases.append(line.strip())
