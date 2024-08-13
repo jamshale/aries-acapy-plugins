@@ -5,7 +5,8 @@ import subprocess
 import sys
 from copy import deepcopy
 from enum import Enum
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Tuple
 
 GLOBAL_PLUGIN_DIR = "plugin_globals"
 
@@ -164,7 +165,7 @@ def get_section_output(
     return j - i
 
 
-def get_and_combine_main_poetry_sections(name: str) -> (dict, dict):
+def get_and_combine_main_poetry_sections(name: str) -> Tuple[dict, dict]:
     """Get the global main sections and combine them with the plugin specific sections."""
     global_sections = deepcopy(sections)
     plugin_sections = deepcopy(sections)
@@ -178,8 +179,10 @@ def get_and_combine_main_poetry_sections(name: str) -> (dict, dict):
         extract_common_sections(filedata, plugin_sections)
 
     combine_dependencies(plugin_sections["DEPS"], global_sections["DEPS"])
+    combine_dependencies(plugin_sections["EXTRAS"], global_sections["EXTRAS"])
     combine_dependencies(plugin_sections["DEV_DEPS"], global_sections["DEV_DEPS"])
     combine_dependencies(plugin_sections["INT_DEPS"], global_sections["INT_DEPS"])
+    combine_dependencies(plugin_sections["PYTEST"], global_sections["PYTEST"])
     return global_sections, plugin_sections
 
 
@@ -235,6 +238,7 @@ def get_and_combine_integration_poetry_sections(name: str) -> tuple[dict, dict]:
     extract_common_sections(filedata, plugin_sections)
     combine_dependencies(plugin_sections["DEPS"], global_sections["DEPS"])
     combine_dependencies(plugin_sections["DEV_DEPS"], global_sections["DEV_DEPS"])
+    combine_dependencies(plugin_sections["PYTEST"], global_sections["PYTEST"])
 
     return global_sections, plugin_sections
 
@@ -283,18 +287,27 @@ def replace_global_sections(name: str) -> None:
     """
     global_sections, plugin_sections = get_and_combine_main_poetry_sections(name)
     process_main_config_sections(name, plugin_sections, global_sections)
-    global_sections, plugin_sections = get_and_combine_integration_poetry_sections(name)
-    process_integration_config_sections(name, plugin_sections, global_sections)
+    if is_plugin_directory(name, True):
+        global_sections, plugin_sections = get_and_combine_integration_poetry_sections(name)
+        process_integration_config_sections(name, plugin_sections, global_sections)
 
 
-def is_plugin_directory(plugin_name: str) -> bool:
+def is_plugin_directory(plugin_name: str, exclude_lite_plugins: bool = False) -> bool:
     # If there is a directory which is not a plugin it should be ignored here
+    if exclude_lite_plugins:
+        lite_plugins = Path('lite_plugins').read_text().splitlines()
+        return (
+            os.path.isdir(plugin_name)
+            and plugin_name != GLOBAL_PLUGIN_DIR
+            and not plugin_name.startswith(".")
+            and plugin_name not in lite_plugins
+        )
     return (
         os.path.isdir(plugin_name)
         and plugin_name != GLOBAL_PLUGIN_DIR
         and not plugin_name.startswith(".")
     )
-
+    
 
 def update_all_poetry_locks():
     for root, _, files in os.walk("."):
@@ -302,10 +315,7 @@ def update_all_poetry_locks():
             print(f"Updating poetry.lock in {root}")
             subprocess.run(["poetry", "lock"], cwd=root)
 
-def upgrade_library_in_all_plugins(library: str = None):
-    if library is None:
-        library = input("Enter the library to upgrade: ")
-        
+def upgrade_library_in_all_plugins(library: str = None):        
     for root, _, files in os.walk("."):
         if "poetry.lock" in files:
             with open(f"{root}/poetry.lock", "r") as file:
@@ -367,9 +377,11 @@ def main(arg_1=None, arg_2=None):
                 print(f"Updating common poetry sections in {plugin_name}\n")
                 replace_global_sections(plugin_name)
                 os.system(f"cd {plugin_name} && rm poetry.lock && poetry lock")
-                os.system(
-                    f"cd {plugin_name}/integration && rm poetry.lock && poetry lock"
-                )
+                # Don't update lite plugin integration files (They don't have any)
+                if is_plugin_directory(plugin_name, True):
+                    os.system(
+                        f"cd {plugin_name}/integration && rm poetry.lock && poetry lock"
+                    )
 
     elif selection == "3":
         # Upgrade plugin globals lock file
@@ -392,10 +404,10 @@ def main(arg_1=None, arg_2=None):
                     global_version = re.findall(r'"([^"]*)"', next_line)
                     break
         # Create and output the markdown release notes
-        msg = f"""### Release v{global_version[0]}\n##### The latest supported versions of aries-cloudagent for each plugin are as follows:\n"""
+        msg = f"""## ACA-Py Release {global_version[0]}\n"""
         print(msg)
         # Markdown table header
-        print("| Plugin Name | Supported aries-cloudagent version |")
+        print("| Plugin Name | Supported ACA-Py Release |")
         print("| --- | --- |")
         for plugin_name in sorted(os.listdir("./")):
             if is_plugin_directory(plugin_name):
@@ -458,14 +470,14 @@ def main(arg_1=None, arg_2=None):
         with open("RELEASES.md", "r") as file:
             last_releases = []
             for line in file:
-                if f"### Release v{global_version[0]}" in line:
+                if f"## ACA-Py Release {global_version[0]}" in line:
                     line = next(file)
                     line = next(file)
                     line = next(file)
                     while "***" not in line:
                         if (
                             line
-                            != "| Plugin Name | Supported aries-cloudagent version |\n"
+                            != "| Plugin Name | Supported ACA-Py Release |\n"
                             and line != "| --- | --- |\n"
                         ):
                             last_releases.append(line.strip())
