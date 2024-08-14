@@ -217,7 +217,6 @@ jobs:
           # lite plugins should be skipped during integration tests
           readarray -t lite_plugin_array < lite_plugins
 
-          set +e #otherwise the script will exit on error
           elementIn () {
             local e match="$1"
             shift
@@ -228,7 +227,7 @@ jobs:
           for dir in ./*/; do
             current_folder=$(basename "$dir")
             # Skip plugin_globals and lite plugins
-            if [ $current_folder == "plugin_globals" ] || [ elementIn $current_folder "${lite_plugin_array[@]}" ]; then
+            if [ "$current_folder" == "plugin_globals" ] || [ elementIn "$current_folder" "${lite_plugin_array[@]}" ]; then
               continue
             fi
             cd $current_folder/integration
