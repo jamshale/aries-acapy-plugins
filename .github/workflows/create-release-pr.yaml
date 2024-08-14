@@ -228,7 +228,7 @@ jobs:
           for dir in ./*/; do
             current_folder=$(basename "$dir")
             # Skip plugin_globals and lite plugins
-            if [[ $current_folder == "plugin_globals" ] || [ elementIn $current_folder "${lite_plugin_array[@]}" ]]; then
+            if [ $current_folder == "plugin_globals" ] || [ elementIn $current_folder "${lite_plugin_array[@]}" ]; then
               continue
             fi
             cd $current_folder/integration
@@ -346,8 +346,8 @@ jobs:
 
           # Update the release notes with the upgraded plugins. 
           # For replacing with the sed command we need to double escape the newline and tab characters.
-          details=$(printf '### Plugins Upgraded For ACA-Py Release %s \n\t - ' "$release_version")
-          double_escape_details=$(printf '### Plugins Upgraded For ACA-Py Release %s \\n\\t - ' "$release_version")
+          details=$(printf '\n### Plugins Upgraded For ACA-Py Release %s \n- ' "$release_version")
+          double_escape_details=$(printf '\\n### Plugins Upgraded For ACA-Py Release %s \\n- ' "$release_version")
 
           # For replacing the first occurence of ' - ' with the details
           count=${#upgraded_plugins[*]}
