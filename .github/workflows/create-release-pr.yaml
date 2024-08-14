@@ -371,8 +371,8 @@ jobs:
           body=${body/v$release_version/v$tag_version}
 
           # Add the heading for the Plugin Release Status and RELEASES.md
-          heading="## Plugin Release Status \n"
-          body="${heading}${body}"
+          heading="# Plugin Release Status"
+          body=printf '%s\n%s' "${heading}" "${body}"
           printf '%s\n%s\n' "${heading}" "$(cat RELEASES.md)" > RELEASES.md
 
           # Prepare the PR body

@@ -445,6 +445,7 @@ def main(arg_1=None, arg_2=None):
                 print(f"|{plugin_name} | {version[0]}|")
         
         print("\n")
+        print(" - ")
 
     elif selection == "5":
         """
