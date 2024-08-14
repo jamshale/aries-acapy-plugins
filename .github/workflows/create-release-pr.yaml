@@ -371,7 +371,7 @@ jobs:
           body=${body/v$release_version/v$tag_version}
 
           # Add the heading for the Plugin Release Status
-          body = "## Plugin Release Status\n $body"
+          body="## Plugin Release Status\n ${body}"
 
           # Prepare the PR body
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
