@@ -472,18 +472,14 @@ def main(arg_1=None, arg_2=None):
             for line in file:
                 if f"## ACA-Py Release {global_version[0]}" in line:
                     line = next(file)
-                    print(line)
                     line = next(file)
-                    print(line)
                     line = next(file)
-                    print(line)
                     while "### Plugins Upgraded" not in line:
                         if (
                             line
                             != "| Plugin Name | Supported ACA-Py Release |\n"
                             and line != "| --- | --- |\n"
                         ):
-                            print(line)
                             last_releases.append(line.strip())
                         line = next(file)
                     break
