@@ -444,9 +444,6 @@ def main(arg_1=None, arg_2=None):
                     file.write(filedata)
                 print(f"|{plugin_name} | {version[0]}|")
 
-        print("***")
-        print(" - ")
-
     elif selection == "5":
         """
         Extract the plugins from the RELEASES.md and determine which plugins which can be
