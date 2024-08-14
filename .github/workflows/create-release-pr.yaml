@@ -327,6 +327,7 @@ jobs:
           # Update the RELEASES.md file with the release notes
           # Remove the Plugin Release Status heading
           sed -i '/# Plugin Release Status/d' RELEASES.md 
+          # Add a marker for the insertion of the upgraded plugins section
           body=$(printf '%s \n*' "${body}")
           echo "$body" | cat - RELEASES.md > temp && mv temp RELEASES.md
 
@@ -352,7 +353,7 @@ jobs:
           # Update the release notes with the upgraded plugins. 
           # For replacing with the sed command we need to double escape the newline and tab characters.
           details=$(printf '\n### Plugins Upgraded For ACA-Py Release %s \n - ' "$release_version")
-          double_escape_details=$(printf '\\n### Plugins Upgraded For ACA-Py Release %s \\n*' "$release_version")
+          double_escape_details=$(printf '\\n### Plugins Upgraded For ACA-Py Release %s \\n - ' "$release_version")
 
           # For replacing the first occurence of '*' with the details
           count=${#upgraded_plugins[*]}
@@ -365,7 +366,7 @@ jobs:
           double_escape_details=$(printf '%s %s \n' "$double_escape_details" "${upgraded_plugins[$count - 1]}")
 
           # Replace the first occurence of '*' with the details
-          sed -i "0,/*/s// - $(printf '%s ' ${double_escape_details})/" RELEASES.md
+          sed -i "0,/*/s//$(printf '%s ' ${double_escape_details})/" RELEASES.md
 
           # Replace the release version with the release tag
           sed -i "0,/v$release_version/{s/v$release_version/v$tag_version/}" RELEASES.md
@@ -373,6 +374,8 @@ jobs:
 
           # Add the heading for the Plugin Release Status and RELEASES.md
           heading="# Plugin Release Status"
+          # Remove the * insertion marker from the body
+          body="${body//*}"
           body=$(printf '%s\n%s' "${heading}" "${body}")
           printf '%s\n%s\n' "${heading}" "$(cat RELEASES.md)" > RELEASES.md
 
