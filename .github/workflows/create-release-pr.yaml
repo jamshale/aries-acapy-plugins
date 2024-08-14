@@ -326,8 +326,8 @@ jobs:
 
           # Update the RELEASES.md file with the release notes
           # Remove the Plugin Release Status heading
-          sed '/# Plugin Release Status/d' RELEASES.md > tmp_body && mv temp_body RELEASES.md
-          echo "$body" | cat - tmp_body > temp && mv temp tmp_body
+          sed -i '/# Plugin Release Status/d' RELEASES.md 
+          echo "$body" | cat - RELEASES.md > temp && mv temp RELEASES.md
 
           # Check if there are any upgrades
           upgraded_plugins=($(python repo_manager.py 5))
