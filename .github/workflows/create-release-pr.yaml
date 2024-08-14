@@ -373,7 +373,7 @@ jobs:
           # Add the heading for the Plugin Release Status and RELEASES.md
           heading="## Plugin Release Status \n"
           body="${heading}${body}"
-          printf '%s\n%s\n' "${heading}" "$(cat RELEASES.md)" >RELEASES.md
+          printf '%s\n%s\n' "${heading}" "$(cat RELEASES.md)" > RELEASES.md
 
           # Prepare the PR body
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
