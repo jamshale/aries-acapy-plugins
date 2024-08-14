@@ -444,9 +444,6 @@ def main(arg_1=None, arg_2=None):
                     file.write(filedata)
                 print(f"|{plugin_name} | {version[0]}|")
 
-        print("***")
-        print(" - ")
-
     elif selection == "5":
         """
         Extract the plugins from the RELEASES.md and determine which plugins which can be
@@ -474,7 +471,7 @@ def main(arg_1=None, arg_2=None):
                     line = next(file)
                     line = next(file)
                     line = next(file)
-                    while "***" not in line:
+                    while "### Plugins Upgraded" not in line:
                         if (
                             line
                             != "| Plugin Name | Supported ACA-Py Release |\n"
@@ -491,9 +488,12 @@ def main(arg_1=None, arg_2=None):
 
         # Get all released plugins and the plugins not on the global version
         for item in last_releases:
-            released_plugins.append(item.split("|")[1].strip())
-            if item.split("|")[2].strip() == global_version[0]:
-                plugins_on_old_release.append(item.split("|")[1].strip())
+            split_item = item.split("|")
+            if len(split_item) > 1:
+                released_plugins.append(split_item[1].strip())
+                
+                if split_item[2].strip() == global_version[0]:
+                    plugins_on_old_release.append(split_item[1].strip())
 
         # If there is releases in the RELEASES.md file then look for new plugins and add them to plugins on old release
         if last_releases:
