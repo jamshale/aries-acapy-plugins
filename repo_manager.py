@@ -443,6 +443,8 @@ def main(arg_1=None, arg_2=None):
                 with open(f"./{plugin_name}/pyproject.toml", "w") as file:
                     file.write(filedata)
                 print(f"|{plugin_name} | {version[0]}|")
+        
+        print("\n")
 
     elif selection == "5":
         """
