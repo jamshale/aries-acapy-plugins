@@ -364,14 +364,16 @@ jobs:
           double_escape_details=$(printf '%s %s \n' "$double_escape_details" "${upgraded_plugins[$count - 1]}")
 
           # Replace the first occurence of ' - ' with the details
-          sed -i "0,/\s\-\s/s// - $(printf '%s ' ${double_escape_details})/" RELEASES.md
+          sed -i "0,/\-/s// - $(printf '%s ' ${double_escape_details})/" RELEASES.md
 
           # Replace the release version with the release tag
           sed -i "0,/v$release_version/{s/v$release_version/v$tag_version/}" RELEASES.md
           body=${body/v$release_version/v$tag_version}
 
-          # Add the heading for the Plugin Release Status
-          body="## Plugin Release Status\n ${body}"
+          # Add the heading for the Plugin Release Status and RELEASES.md
+          heading="## Plugin Release Status \n"
+          body="${heading}${body}"
+          printf '%s\n%s\n' "${heading}" "$(cat RELEASES.md)" >RELEASES.md
 
           # Prepare the PR body
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
