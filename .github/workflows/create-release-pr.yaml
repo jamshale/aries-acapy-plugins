@@ -375,7 +375,7 @@ jobs:
           # Add the heading for the Plugin Release Status and RELEASES.md
           heading="# Plugin Release Status"
           # Remove the * insertion marker from the body
-          body="${body//*}"
+          body=$(echo "$body" | sed 's/\*//g')
           body=$(printf '%s\n%s' "${heading}" "${body}")
           printf '%s\n%s\n' "${heading}" "$(cat RELEASES.md)" > RELEASES.md
 
