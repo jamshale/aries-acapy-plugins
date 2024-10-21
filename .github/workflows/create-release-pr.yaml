@@ -49,7 +49,7 @@ jobs:
       #       Install poetry
       #----------------------------------------------
       - name: Install poetry
-        run: pipx install poetry
+        run: python3 -m pipx install poetry
         id: setup-poetry
       #----------------------------------------------
       #       Get the latest version of acapy-agent from pypi
@@ -57,7 +57,7 @@ jobs:
       - name: Get latest acapy-agent version
         id: current_available_version
         run: |
-          remote_version=$(pip index versions acapy-agent)
+          remote_version=$(python3 -m pip index versions acapy-agent)
           version=$(grep -oP '(?<=Available versions: ).*?(?=,)' <<< "$remote_version")
           echo current_available_version=$version >> $GITHUB_OUTPUT
           echo "Remote version = $version"
